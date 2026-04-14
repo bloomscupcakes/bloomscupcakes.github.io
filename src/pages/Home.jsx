@@ -47,7 +47,7 @@ return (
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="relative text-center flex flex-col items-center justify-center py-20 px-6 overflow-hidden"
+      className="relative text-center flex flex-col items-center justify-center py-16 overflow-hidden"
     >
       {heroImg && (
         <motion.div
@@ -81,14 +81,14 @@ return (
 
 
     {/* ================= TOP CUPCAKES ================= */}
-    <section className="px-6 py-8">
-      <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4">
+    <section className="px-4 sm:px-6 py-8">
+      <h2 className="text-3xl font-bold text-center mb-6 text-pink-600">Top Cupcakes</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {imageList.slice(0, 4).map((img, i) => (
           <motion.div
             key={i}
             whileHover={{ scale: 1.05 }}
-            className="min-w-[80%] sm:min-w-[40%] md:min-w-[25%]
-            snap-center rounded-2xl overflow-hidden
+            className="rounded-2xl overflow-hidden
             bg-white border border-[#F7B2C4] shadow-md"
           >
             <img src={img} className="h-64 w-full object-cover" />
@@ -107,16 +107,10 @@ return (
       </div>
     </section>
 
-    {/* ================= CUPCAKE BUILDER ================= */}
-<section className="px-6 py-10">
-  <div className="max-w-6xl mx-auto">
     <CupcakeBuilder />
-  </div>
-</section>
-
 
     {/* ================= REVIEWS ================= */}
-    <section className="px-6 py-8">
+    <section className="px-4 sm:px-6 py-8">
       <h2 className="text-3xl font-bold text-center mb-6 text-pink-600">
         Loved by Customers
       </h2>
@@ -140,7 +134,7 @@ return (
     </section>
 
     {/* ================= MAP ================= */}
-    <section className="px-6 py-8">
+    <section className="px-4 sm:px-6 py-8">
       <p className="text-center text-gray-600 mb-8">
         Located in the Bayshore area of Ottawa — serving fresh cupcakes daily 🧁
       </p>

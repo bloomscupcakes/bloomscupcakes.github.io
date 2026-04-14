@@ -4,7 +4,7 @@ import { SiGmail } from "react-icons/si";
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
+    <div className="bg-gray-50 px-6 py-8">
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

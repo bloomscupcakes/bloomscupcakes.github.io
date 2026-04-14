@@ -2,163 +2,155 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
+const MotionLink = motion(Link);
+
 import vanilla from "../assets/vanilla.png";
 import chocolate from "../assets/chocolate.png";
 import redVelvet from "../assets/redvelvet.png";
 import classicFrosting from "../assets/classic_frosting.png";
 import floralFrosting from "../assets/floral_frosting.png";
 
-const MotionLink = motion(Link);
+const cupcakes = [
+  { id: "vanilla", name: "Vanilla", image: vanilla, price: 0 },
+  { id: "chocolate", name: "Chocolate", image: chocolate, price: 0 },
+  { id: "redVelvet", name: "Red Velvet", image: redVelvet, price: 2 },
+];
 
-export default function CupcakeBuilder() {
-  const [flavor, setFlavor] = useState("vanilla");
-  const [design, setDesign] = useState("classic");
+const frostings = [
+  { id: "classic", name: "Classic", image: classicFrosting, price: 0 },
+  { id: "floral", name: "Floral", image: floralFrosting, price: 2 },
+];
 
-  const BASE_PRICE = 3;
+export default function CupcakeSelector() {
+  const [selectedCupcake, setSelectedCupcake] = useState("vanilla");
+  const [selectedFrosting, setSelectedFrosting] = useState("classic");
 
-  const price =
-    BASE_PRICE +
-    (flavor === "redVelvet" ? 2 : 0) +
-    (design === "floral" ? 2 : 0);
-
-  const baseImages = {
-    vanilla,
-    chocolate,
-    redVelvet,
-  };
-
-  const toppingImages = {
-    classic: classicFrosting,
-    floral: floralFrosting,
-  };
-
-  const flavors = ["vanilla", "chocolate", "redVelvet"];
-  const designs = ["classic", "floral"];
+  const cupcake = cupcakes.find((c) => c.id === selectedCupcake);
+  const frosting = frostings.find((f) => f.id === selectedFrosting);
+  const totalPrice = 3 + cupcake.price + frosting.price;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 flex justify-center">
-      <div className="w-full max-w-5xl">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100">
+      <div className="mx-auto max-w-4xl p-4">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-pink-600 mb-2">Create Your Cupcake</h1>
+          <p className="text-gray-600">Mix and match flavors and frostings</p>
+        </div>
 
-        {/* ================= GRID ================= */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch min-h-[520px]">
-
-          {/* ================= LEFT PANEL ================= */}
-          <div className="bg-white rounded-2xl shadow p-6 flex flex-col h-full">
-
-            {/* CUPCAKE CENTER (fixes empty bottom space) */}
-            <div className="flex-1 flex items-center justify-center">
-              <div className="relative w-72 h-72">
-
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={flavor}
-                    src={baseImages[flavor]}
-                    className="absolute w-full h-full object-contain"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                  />
-                </AnimatePresence>
-
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={design}
-                    src={toppingImages[design]}
-                    className="absolute w-full h-full object-contain"
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.25 }}
-                  />
-                </AnimatePresence>
-
-              </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Left Side: Preview */}
+          <div className="bg-white rounded-3xl p-4 md:p-8 shadow-xl">
+            <h2 className="text-xl md:text-2xl font-semibold text-center mb-4 md:mb-6 text-gray-800">Your Cupcake</h2>
+            <div className="relative w-full max-w-[12rem] md:max-w-sm mx-auto aspect-square mb-4 md:mb-6">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={selectedCupcake}
+                  src={cupcake.image}
+                  alt={cupcake.name}
+                  className="absolute inset-0 w-full h-full object-contain"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </AnimatePresence>
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={selectedFrosting}
+                  src={frosting.image}
+                  alt={frosting.name}
+                  className="absolute inset-0 w-full h-full object-contain"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </AnimatePresence>
             </div>
-
-            {/* PRICE */}
-            <div className="text-center text-xl font-semibold mt-4">
-              Price: ${price} CAD
+            <div className="text-center">
+              <p className="text-base md:text-lg font-medium text-gray-700">
+                {cupcake.name} with {frosting.name} Frosting
+              </p>
+              <p className="text-xl md:text-2xl font-bold text-pink-600 mt-2">${totalPrice} CAD</p>
             </div>
-
-            {/* CTA */}
-            <div className="mt-auto pt-6 flex justify-center">
-              <MotionLink
-                to="/contact"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.97 }}
-                className="bg-pink-500 text-white px-6 py-3 rounded-xl hover:bg-pink-600 text-center w-full"
-              >
-                Contact Us to Order
-              </MotionLink>
-            </div>
-
           </div>
 
-          {/* ================= RIGHT PANEL ================= */}
-          <div className="bg-white rounded-2xl shadow p-6 flex flex-col gap-8 h-full">
-
-            <h2 className="text-3xl font-bold text-pink-600 text-center md:text-left">
-              Cupcake Builder
-            </h2>
-
-            {/* FLAVOR */}
-            <div>
-              <h3 className="font-semibold text-gray-700 mb-3">Flavor</h3>
-
-              <div className="grid grid-cols-3 gap-3">
-                {flavors.map((f) => (
+          {/* Right Side: Cupcake and Frosting Selections */}
+          <div className="space-y-6 md:space-y-8">
+            {/* Cupcake Selection */}
+            <div className="bg-white rounded-3xl p-4 md:p-6 shadow-xl">
+              <h3 className="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-gray-800">Choose Your Cupcake</h3>
+              <div className="grid grid-cols-1 gap-3 md:gap-4">
+                {cupcakes.map((cupcake) => (
                   <button
-                    key={f}
-                    onClick={() => setFlavor(f)}
-                    className={`p-3 rounded-xl border bg-white transition hover:shadow ${
-                      flavor === f ? "ring-2 ring-pink-400" : ""
+                    key={cupcake.id}
+                    onClick={() => setSelectedCupcake(cupcake.id)}
+                    className={`flex items-center p-3 md:p-4 rounded-2xl border-2 transition-all ${
+                      selectedCupcake === cupcake.id
+                        ? "border-pink-400 bg-pink-50"
+                        : "border-gray-200 hover:border-pink-300"
                     }`}
                   >
                     <img
-                      src={baseImages[f]}
-                      className="w-full h-16 object-contain"
+                      src={cupcake.image}
+                      alt={cupcake.name}
+                      className="w-12 h-12 md:w-16 md:h-16 object-contain mr-3 md:mr-4"
                     />
-                    <div className="text-xs mt-1 capitalize">{f}</div>
-                    {f === "redVelvet" && (
-                      <div className="text-[10px] text-pink-500">+2 CAD</div>
-                    )}
+                    <div className="text-left">
+                      <p className="font-medium text-gray-800 text-sm md:text-base">{cupcake.name}</p>
+                      {cupcake.price > 0 && (
+                        <p className="text-xs md:text-sm text-pink-600">+${cupcake.price} CAD</p>
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* DESIGN */}
-            <div>
-              <h3 className="font-semibold text-gray-700 mb-3">Design</h3>
-
-              <div className="grid grid-cols-2 gap-3">
-                {designs.map((d) => (
+            {/* Frosting Selection */}
+            <div className="bg-white rounded-3xl p-4 md:p-6 shadow-xl">
+              <h3 className="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-gray-800">Choose Your Frosting</h3>
+              <div className="grid grid-cols-1 gap-3 md:gap-4">
+                {frostings.map((frosting) => (
                   <button
-                    key={d}
-                    onClick={() => setDesign(d)}
-                    className={`p-3 rounded-xl border bg-white transition hover:shadow ${
-                      design === d ? "ring-2 ring-pink-400" : ""
+                    key={frosting.id}
+                    onClick={() => setSelectedFrosting(frosting.id)}
+                    className={`flex items-center p-3 md:p-4 rounded-2xl border-2 transition-all ${
+                      selectedFrosting === frosting.id
+                        ? "border-pink-400 bg-pink-50"
+                        : "border-gray-200 hover:border-pink-300"
                     }`}
                   >
-                    <div className="h-16 flex items-center justify-center">
-                      <img
-                        src={toppingImages[d]}
-                        className="h-full object-contain"
-                      />
+                    <img
+                      src={frosting.image}
+                      alt={frosting.name}
+                      className="w-12 h-12 md:w-16 md:h-16 object-contain mr-3 md:mr-4"
+                    />
+                    <div className="text-left">
+                      <p className="font-medium text-gray-800 text-sm md:text-base">{frosting.name}</p>
+                      {frosting.price > 0 && (
+                        <p className="text-xs md:text-sm text-pink-600">+${frosting.price} CAD</p>
+                      )}
                     </div>
-
-                    <div className="text-xs mt-1 capitalize">{d}</div>
-
-                    {d === "floral" && (
-                      <div className="text-[10px] text-pink-500">+2 CAD</div>
-                    )}
                   </button>
                 ))}
               </div>
             </div>
-
           </div>
+        </div>
+
+        {/* Order Button at Bottom */}
+        <div className="mt-6 md:mt-8 bg-white rounded-3xl p-4 md:p-6 shadow-xl text-center">
+          <p className="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">Ready to order? Contact us to place your custom cupcake order!</p>
+          <MotionLink
+            to="/contact"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="inline-block bg-pink-500 text-white px-6 py-2 rounded-xl hover:bg-pink-600"
+          >
+            Contact Us
+          </MotionLink>
         </div>
       </div>
     </div>
