@@ -8,7 +8,7 @@ const images = import.meta.glob("../gallery/*.{jpg,jpeg,png}", {
 
 const imageList = Object.values(images);
 
-const Gallery = () => {
+const Gallery = ({ darkMode }) => {
   const [index, setIndex] = useState(null);
   const [scale, setScale] = useState(1);
   const startX = useRef(0);
@@ -73,12 +73,18 @@ const Gallery = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-black">
+    <div className={`min-h-screen ${
+      darkMode ? "bg-gray-900" : "bg-gray-100"
+    } ${darkMode ? "text-white" : "text-black"}`}>
         <div className="text-center pt-12 pb-6">
-            <h1 className="text-5xl font-bold tracking-tight">
+            <h1 className={`text-5xl font-bold tracking-tight ${
+              darkMode ? "text-pink-400" : "text-black"
+            }`}>
                 Sweet Gallery
             </h1>
-        <div className="mt-4 w-16 h-[2px] bg-black mx-auto opacity-20" />
+        <div className={`mt-4 w-16 h-[2px] mx-auto opacity-20 ${
+          darkMode ? "bg-pink-400" : "bg-black"
+        }`} />
     </div>
 
       {/* GRID */}
@@ -86,7 +92,9 @@ const Gallery = () => {
         {imageList.map((src, i) => (
           <div
             key={i}
-            className="rounded-2xl overflow-hidden shadow-md bg-white cursor-pointer"
+            className={`rounded-2xl overflow-hidden shadow-md cursor-pointer ${
+              darkMode ? "bg-gray-800" : "bg-white"
+            }`}
             onClick={() => setIndex(i)}
           >
             <img
@@ -102,7 +110,9 @@ const Gallery = () => {
       {/* LIGHTBOX */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+          className={`fixed inset-0 flex items-center justify-center z-50 ${
+            darkMode ? "bg-black/95" : "bg-black/90"
+          }`}
           onClick={close}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}

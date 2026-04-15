@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function Navbar() {
+export default function Navbar({ darkMode, toggleDarkMode }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -26,8 +26,12 @@ export default function Navbar() {
       transition={{ duration: 0.4 }}
       className={`sticky top-0 z-50 transition-all ${
         scrolled
-          ? "bg-white/90 backdrop-blur-md shadow-md"
-          : "bg-white/70 backdrop-blur-sm"
+          ? darkMode
+            ? "bg-gray-900/90 backdrop-blur-md shadow-md"
+            : "bg-white/90 backdrop-blur-md shadow-md"
+          : darkMode
+            ? "bg-gray-900/70 backdrop-blur-sm"
+            : "bg-white/70 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-6xl mx-auto px-4">
@@ -36,7 +40,9 @@ export default function Navbar() {
           {/* LEFT: Logo */}
           <Link
             to="/"
-            className="text-2xl font-extrabold text-pink-500 mr-8"
+            className={`text-2xl font-extrabold mr-8 ${
+              darkMode ? "text-pink-400" : "text-pink-500"
+            }`}
           >
             Blooms Cupcakes 🧁
           </Link>
@@ -50,8 +56,12 @@ export default function Navbar() {
                     whileHover={{ scale: 1.1 }}
                     className={`cursor-pointer transition ${
                       isActive
-                        ? "text-pink-500 font-semibold"
-                        : "text-gray-700 hover:text-pink-500"
+                        ? darkMode
+                          ? "text-pink-400 font-semibold"
+                          : "text-pink-500 font-semibold"
+                        : darkMode
+                          ? "text-gray-300 hover:text-pink-400"
+                          : "text-gray-700 hover:text-pink-500"
                     }`}
                   >
                     {item.name}
@@ -61,12 +71,29 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* RIGHT: CTA */}
-          <div className="hidden md:flex items-center">
+          {/* RIGHT: CTA and Dark Mode Toggle */}
+          <div className="hidden md:flex items-center gap-4">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleDarkMode}
+              className={`text-2xl p-2 rounded-lg transition ${
+                darkMode
+                  ? "bg-gray-800 text-yellow-300"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+              title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {darkMode ? "☀️" : "🌙"}
+            </motion.button>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
                 to="/order"
-                className="bg-pink-500 text-white px-4 py-2 rounded-xl shadow hover:bg-pink-600 transition"
+                className={`px-4 py-2 rounded-xl shadow transition ${
+                  darkMode
+                    ? "bg-pink-600 text-white hover:bg-pink-700"
+                    : "bg-pink-500 text-white hover:bg-pink-600"
+                }`}
               >
                 Order Now
               </Link>
@@ -74,12 +101,27 @@ export default function Navbar() {
           </div>
 
           {/* Mobile toggle */}
-          <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden ml-auto text-gray-700 text-2xl"
-          >
-            ☰
-          </button>
+          <div className="md:hidden ml-auto flex items-center gap-2">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleDarkMode}
+              className={`text-2xl p-2 rounded-lg transition ${
+                darkMode
+                  ? "bg-gray-800 text-yellow-300"
+                  : "bg-gray-100 text-gray-700"
+              }`}
+              title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {darkMode ? "☀️" : "🌙"}
+            </motion.button>
+            <button
+              onClick={() => setOpen(!open)}
+              className={`text-2xl ${darkMode ? "text-gray-300" : "text-gray-700"}`}
+            >
+              ☰
+            </button>
+          </div>
         </div>
       </div>
 
@@ -90,7 +132,9 @@ export default function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden bg-white overflow-hidden shadow-md"
+            className={`md:hidden overflow-hidden shadow-md ${
+              darkMode ? "bg-gray-800" : "bg-white"
+            }`}
           >
             <div className="flex flex-col items-start px-6 py-4 gap-4">
               {navItems.map((item) => (
@@ -98,7 +142,11 @@ export default function Navbar() {
                   key={item.to}
                   to={item.to}
                   onClick={() => setOpen(false)}
-                  className="text-gray-700 hover:text-pink-500"
+                  className={`transition ${
+                    darkMode
+                      ? "text-gray-300 hover:text-pink-400"
+                      : "text-gray-700 hover:text-pink-500"
+                  }`}
                 >
                   {item.name}
                 </Link>
@@ -107,7 +155,11 @@ export default function Navbar() {
               <Link
                 to="/order"
                 onClick={() => setOpen(false)}
-                className="bg-pink-500 text-white px-4 py-2 rounded-xl"
+                className={`px-4 py-2 rounded-xl transition ${
+                  darkMode
+                    ? "bg-pink-600 text-white hover:bg-pink-700"
+                    : "bg-pink-500 text-white hover:bg-pink-600"
+                }`}
               >
                 Order Now
               </Link>

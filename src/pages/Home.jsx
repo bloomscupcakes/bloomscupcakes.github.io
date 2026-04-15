@@ -27,7 +27,7 @@ const reviews = [
   },
 ];
 
-export default function Home() {
+export default function Home({ darkMode }) {
   const [heroImg, setHeroImg] = useState(null);
 
   /* Pick random cover image once */
@@ -40,7 +40,7 @@ export default function Home() {
   }, []);
 
 return (
-  <div className="bg-gray-50">
+  <div className={darkMode ? "bg-gray-900" : "bg-gray-50"}>
 
     {/* ================= HERO ================= */}
     <motion.section
@@ -62,17 +62,25 @@ return (
       )}
 
       <div className="relative z-10">
-        <h1 className="text-6xl font-extrabold text-pink-600 mb-4">
+        <h1 className={`text-6xl font-extrabold mb-4 ${
+          darkMode ? "text-pink-400" : "text-pink-600"
+        }`}>
           Welcome to Blooms Cupcakes 🧁
         </h1>
 
-        <p className="text-gray-700 max-w-xl mx-auto mb-6 text-lg">
+        <p className={`max-w-xl mx-auto mb-6 text-lg ${
+          darkMode ? "text-gray-300" : "text-gray-700"
+        }`}>
           Freshly baked cupcakes made with love, creativity, and happiness.
         </p>
 
         <Link
           to="/order"
-          className="bg-pink-500 text-white px-8 py-3 rounded-xl shadow-lg hover:bg-pink-600 hover:scale-105 transition"
+          className={`px-8 py-3 rounded-xl shadow-lg transition hover:scale-105 ${
+            darkMode
+              ? "bg-pink-600 text-white hover:bg-pink-700"
+              : "bg-pink-500 text-white hover:bg-pink-600"
+          }`}
         >
           Order Now
         </Link>
@@ -82,14 +90,19 @@ return (
 
     {/* ================= TOP CUPCAKES ================= */}
     <section className="px-4 sm:px-6 py-8">
-      <h2 className="text-3xl font-bold text-center mb-6 text-pink-600">Top Cupcakes</h2>
+      <h2 className={`text-3xl font-bold text-center mb-6 ${
+        darkMode ? "text-pink-400" : "text-pink-600"
+      }`}>Top Cupcakes</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {imageList.slice(0, 4).map((img, i) => (
           <motion.div
             key={i}
             whileHover={{ scale: 1.05 }}
-            className="rounded-2xl overflow-hidden
-            bg-white border border-[#F7B2C4] shadow-md"
+            className={`rounded-2xl overflow-hidden shadow-md ${
+              darkMode
+                ? "bg-gray-800 border border-pink-700"
+                : "bg-white border border-[#F7B2C4]"
+            }`}
           >
             <img src={img} className="h-64 w-full object-cover" />
           </motion.div>
@@ -98,20 +111,24 @@ return (
       <div className="flex justify-center mt-6">
         <Link
           to="/gallery"
-          className="px-6 py-3 rounded-xl font-semibold
-          bg-[#E85D75] text-white
-          shadow-md hover:bg-[#d94f68] hover:scale-105 transition"
+          className={`px-6 py-3 rounded-xl font-semibold shadow-md transition hover:scale-105 ${
+            darkMode
+              ? "bg-pink-700 text-white hover:bg-pink-800"
+              : "bg-[#E85D75] text-white hover:bg-[#d94f68]"
+          }`}
         >
           View Full Gallery
         </Link>
       </div>
     </section>
 
-    <CupcakeBuilder />
+    <CupcakeBuilder darkMode={darkMode} />
 
     {/* ================= REVIEWS ================= */}
     <section className="px-4 sm:px-6 py-8">
-      <h2 className="text-3xl font-bold text-center mb-6 text-pink-600">
+      <h2 className={`text-3xl font-bold text-center mb-6 ${
+        darkMode ? "text-pink-400" : "text-pink-600"
+      }`}>
         Loved by Customers
       </h2>
 
@@ -122,10 +139,14 @@ return (
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-6 rounded-xl shadow"
+            className={`p-6 rounded-xl shadow ${
+              darkMode ? "bg-gray-800 text-gray-300" : "bg-white text-gray-700"
+            }`}
           >
-            <p className="text-gray-700 mb-4">"{r.text}"</p>
-            <div className="font-semibold text-pink-500">
+            <p className="mb-4">"{r.text}"</p>
+            <div className={`font-semibold ${
+              darkMode ? "text-pink-400" : "text-pink-500"
+            }`}>
               - {r.name}
             </div>
           </motion.div>
@@ -135,7 +156,9 @@ return (
 
     {/* ================= MAP ================= */}
     <section className="px-4 sm:px-6 py-8">
-      <p className="text-center text-gray-600 mb-8">
+      <p className={`text-center mb-8 ${
+        darkMode ? "text-gray-400" : "text-gray-600"
+      }`}>
         Located in the Bayshore area of Ottawa — serving fresh cupcakes daily 🧁
       </p>
 
@@ -143,7 +166,9 @@ return (
         <iframe
           title="Bayshore Ottawa Map"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11215.417556220242!2d-75.81893407130953!3d45.351751537155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cce00dd61c7120b%3A0x75ba772f94a9382e!2sBayshore%2C%20Ottawa%2C%20ON!5e0!3m2!1sen!2sca!4v1776137349450!5m2!1sen!2sca"
-          className="w-full max-w-4xl h-[350px] rounded-2xl shadow-lg border"
+          className={`w-full max-w-4xl h-[350px] rounded-2xl shadow-lg border ${
+            darkMode ? "border-gray-700" : "border-gray-200"
+          }`}
           loading="lazy"
           style={{ border: 0 }}
           allowFullScreen

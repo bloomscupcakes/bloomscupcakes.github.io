@@ -53,9 +53,11 @@ const sections = [
   },
 ];
 
-export default function TermsAndConditions() {
+export default function TermsAndConditions({ darkMode }) {
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-12 flex justify-center">
+    <div className={`min-h-screen px-6 py-12 flex justify-center ${
+      darkMode ? "bg-gray-900" : "bg-gray-50"
+    }`}>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -65,10 +67,12 @@ export default function TermsAndConditions() {
 
         {/* HEADER */}
         <div className="text-center mb-10 space-y-2">
-          <h1 className="text-4xl font-bold text-pink-500">
+          <h1 className={`text-4xl font-bold ${
+            darkMode ? "text-pink-400" : "text-pink-500"
+          }`}>
             Terms & Conditions
           </h1>
-          <p className="text-gray-600">
+          <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
             Please read these terms before placing an order.
           </p>
         </div>
@@ -81,12 +85,20 @@ export default function TermsAndConditions() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
-            className="bg-white rounded-xl shadow p-6 border border-pink-100 hover:shadow-md transition"
+            className={`rounded-xl shadow p-6 border transition hover:shadow-md ${
+              darkMode
+                ? "bg-gray-800 border-pink-700 text-gray-100"
+                : "bg-white border-pink-100"
+            }`}
           >
-            <h2 className="text-lg font-semibold text-pink-600 mb-2">
+            <h2 className={`text-lg font-semibold mb-2 ${
+              darkMode ? "text-pink-400" : "text-pink-600"
+            }`}>
               {section.title}
             </h2>
-            <p className="text-gray-700 leading-relaxed">
+            <p className={`leading-relaxed ${
+              darkMode ? "text-gray-300" : "text-gray-700"
+            }`}>
               {section.content}
             </p>
           </motion.div>
@@ -96,7 +108,9 @@ export default function TermsAndConditions() {
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
-          className="text-center text-sm text-gray-500 pt-6"
+          className={`text-center text-sm pt-6 ${
+            darkMode ? "text-gray-500" : "text-gray-500"
+          }`}
         >
           Last updated: April 14, 2026 • Blooms Cupcakes
         </motion.div>

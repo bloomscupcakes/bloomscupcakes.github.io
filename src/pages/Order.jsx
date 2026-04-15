@@ -1,9 +1,13 @@
 import { motion } from "framer-motion";
 import { FaInstagram, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 
-export default function Order() {
+export default function Order({ darkMode }) {
   return (
-    <div className="min-h-screen bg-[#FFF7F9] text-[#2B2B2B] px-6 py-16">
+    <div className={`min-h-screen px-6 py-16 ${
+      darkMode
+        ? "bg-gray-900 text-gray-100"
+        : "bg-[#FFF7F9] text-[#2B2B2B]"
+    }`}>
 
       {/* Header */}
       <motion.div
@@ -12,11 +16,15 @@ export default function Order() {
         transition={{ duration: 0.6 }}
         className="text-center max-w-2xl mx-auto"
       >
-        <h1 className="text-5xl font-bold text-[#E85D75] mb-4">
+        <h1 className={`text-5xl font-bold mb-4 ${
+          darkMode ? "text-pink-400" : "text-[#E85D75]"
+        }`}>
           Place an Order 🧁
         </h1>
 
-        <p className="text-gray-600 text-lg">
+        <p className={`text-lg ${
+          darkMode ? "text-gray-400" : "text-gray-600"
+        }`}>
           We’re currently taking orders through Instagram, email, or phone.
           Reach out and we’ll help you create the perfect cupcakes for your occasion.
         </p>
@@ -66,9 +74,15 @@ export default function Order() {
               show: { opacity: 1, y: 0 },
             }}
             whileHover={{ scale: 1.05 }}
-            className="bg-white border border-[#F7B2C4] rounded-2xl p-6 text-center shadow-md hover:shadow-lg transition"
+            className={`rounded-2xl p-6 text-center shadow-md hover:shadow-lg transition border ${
+              darkMode
+                ? "bg-gray-800 border-pink-700 text-gray-100"
+                : "bg-white border-[#F7B2C4]"
+            }`}
           >
-            <div className="flex justify-center mb-4 text-[#E85D75]">
+            <div className={`flex justify-center mb-4 ${
+              darkMode ? "text-pink-400" : "text-[#E85D75]"
+            }`}>
               {item.icon}
             </div>
 
@@ -76,7 +90,9 @@ export default function Order() {
               {item.title}
             </h3>
 
-            <p className="text-gray-600 text-sm">
+            <p className={`text-sm ${
+              darkMode ? "text-gray-400" : "text-gray-600"
+            }`}>
               {item.text}
             </p>
           </motion.a>

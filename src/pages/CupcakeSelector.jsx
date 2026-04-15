@@ -21,7 +21,7 @@ const frostings = [
   { id: "floral", name: "Floral", image: floralFrosting, price: 2 },
 ];
 
-export default function CupcakeSelector() {
+export default function CupcakeSelector({ darkMode }) {
   const [selectedCupcake, setSelectedCupcake] = useState("vanilla");
   const [selectedFrosting, setSelectedFrosting] = useState("classic");
 
@@ -30,17 +30,25 @@ export default function CupcakeSelector() {
   const totalPrice = 3 + cupcake.price + frosting.price;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-rose-100">
+    <div className={`min-h-screen bg-gradient-to-br ${
+      darkMode ? "from-gray-900 to-gray-800" : "from-pink-50 to-rose-100"
+    }`}>
       <div className="mx-auto max-w-4xl p-4">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-pink-600 mb-2">Create Your Cupcake</h1>
-          <p className="text-gray-600">Mix and match flavors and frostings</p>
+          <h1 className={`text-4xl font-bold mb-2 ${
+            darkMode ? "text-pink-400" : "text-pink-600"
+          }`}>Create Your Cupcake</h1>
+          <p className={darkMode ? "text-gray-400" : "text-gray-600"}>Mix and match flavors and frostings</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {/* Left Side: Preview */}
-          <div className="bg-white rounded-3xl p-4 md:p-8 shadow-xl">
-            <h2 className="text-xl md:text-2xl font-semibold text-center mb-4 md:mb-6 text-gray-800">Your Cupcake</h2>
+          <div className={`rounded-3xl p-4 md:p-8 shadow-xl ${
+            darkMode ? "bg-gray-800" : "bg-white"
+          }`}>
+            <h2 className={`text-xl md:text-2xl font-semibold text-center mb-4 md:mb-6 ${
+              darkMode ? "text-gray-100" : "text-gray-800"
+            }`}>Your Cupcake</h2>
             <div className="relative w-full max-w-[12rem] md:max-w-sm mx-auto aspect-square mb-4 md:mb-6">
               <AnimatePresence mode="wait">
                 <motion.img
@@ -68,18 +76,18 @@ export default function CupcakeSelector() {
               </AnimatePresence>
             </div>
             <div className="text-center">
-              <p className="text-base md:text-lg font-medium text-gray-700">
+              <p className={`text-base md:text-lg font-medium ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
                 {cupcake.name} with {frosting.name} Frosting
               </p>
-              <p className="text-xl md:text-2xl font-bold text-pink-600 mt-2">${totalPrice} CAD</p>
+              <p className={`text-xl md:text-2xl font-bold mt-2 ${darkMode ? "text-pink-400" : "text-pink-600"}`}>${totalPrice} CAD</p>
             </div>
           </div>
 
           {/* Right Side: Cupcake and Frosting Selections */}
           <div className="space-y-6 md:space-y-8">
             {/* Cupcake Selection */}
-            <div className="bg-white rounded-3xl p-4 md:p-6 shadow-xl">
-              <h3 className="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-gray-800">Choose Your Cupcake</h3>
+            <div className={`rounded-3xl p-4 md:p-6 shadow-xl ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+              <h3 className={`text-lg md:text-xl font-semibold mb-3 md:mb-4 ${darkMode ? "text-gray-100" : "text-gray-800"}`}>Choose Your Cupcake</h3>
               <div className="grid grid-cols-1 gap-3 md:gap-4">
                 {cupcakes.map((cupcake) => (
                   <button
@@ -87,8 +95,8 @@ export default function CupcakeSelector() {
                     onClick={() => setSelectedCupcake(cupcake.id)}
                     className={`flex items-center p-3 md:p-4 rounded-2xl border-2 transition-all ${
                       selectedCupcake === cupcake.id
-                        ? "border-pink-400 bg-pink-50"
-                        : "border-gray-200 hover:border-pink-300"
+                        ? darkMode ? "border-pink-400 bg-gray-700" : "border-pink-400 bg-pink-50"
+                        : darkMode ? "border-gray-600 hover:border-pink-400" : "border-gray-200 hover:border-pink-300"
                     }`}
                   >
                     <img
@@ -97,9 +105,9 @@ export default function CupcakeSelector() {
                       className="w-12 h-12 md:w-16 md:h-16 object-contain mr-3 md:mr-4"
                     />
                     <div className="text-left">
-                      <p className="font-medium text-gray-800 text-sm md:text-base">{cupcake.name}</p>
+                      <p className={`font-medium text-sm md:text-base ${darkMode ? "text-gray-100" : "text-gray-800"}`}>{cupcake.name}</p>
                       {cupcake.price > 0 && (
-                        <p className="text-xs md:text-sm text-pink-600">+${cupcake.price} CAD</p>
+                        <p className={`text-xs md:text-sm ${darkMode ? "text-pink-400" : "text-pink-600"}`}>+${cupcake.price} CAD</p>
                       )}
                     </div>
                   </button>
@@ -108,8 +116,8 @@ export default function CupcakeSelector() {
             </div>
 
             {/* Frosting Selection */}
-            <div className="bg-white rounded-3xl p-4 md:p-6 shadow-xl">
-              <h3 className="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-gray-800">Choose Your Frosting</h3>
+            <div className={`rounded-3xl p-4 md:p-6 shadow-xl ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+              <h3 className={`text-lg md:text-xl font-semibold mb-3 md:mb-4 ${darkMode ? "text-gray-100" : "text-gray-800"}`}>Choose Your Frosting</h3>
               <div className="grid grid-cols-1 gap-3 md:gap-4">
                 {frostings.map((frosting) => (
                   <button
@@ -117,8 +125,8 @@ export default function CupcakeSelector() {
                     onClick={() => setSelectedFrosting(frosting.id)}
                     className={`flex items-center p-3 md:p-4 rounded-2xl border-2 transition-all ${
                       selectedFrosting === frosting.id
-                        ? "border-pink-400 bg-pink-50"
-                        : "border-gray-200 hover:border-pink-300"
+                        ? darkMode ? "border-pink-400 bg-gray-700" : "border-pink-400 bg-pink-50"
+                        : darkMode ? "border-gray-600 hover:border-pink-400" : "border-gray-200 hover:border-pink-300"
                     }`}
                   >
                     <img
@@ -127,9 +135,9 @@ export default function CupcakeSelector() {
                       className="w-12 h-12 md:w-16 md:h-16 object-contain mr-3 md:mr-4"
                     />
                     <div className="text-left">
-                      <p className="font-medium text-gray-800 text-sm md:text-base">{frosting.name}</p>
+                      <p className={`font-medium text-sm md:text-base ${darkMode ? "text-gray-100" : "text-gray-800"}`}>{frosting.name}</p>
                       {frosting.price > 0 && (
-                        <p className="text-xs md:text-sm text-pink-600">+${frosting.price} CAD</p>
+                        <p className={`text-xs md:text-sm ${darkMode ? "text-pink-400" : "text-pink-600"}`}>+${frosting.price} CAD</p>
                       )}
                     </div>
                   </button>
@@ -140,14 +148,18 @@ export default function CupcakeSelector() {
         </div>
 
         {/* Order Button at Bottom */}
-        <div className="mt-6 md:mt-8 bg-white rounded-3xl p-4 md:p-6 shadow-xl text-center">
-          <p className="text-gray-600 mb-3 md:mb-4 text-sm md:text-base">Ready to order? Contact us to place your custom cupcake order!</p>
+        <div className={`mt-6 md:mt-8 rounded-3xl p-4 md:p-6 shadow-xl text-center ${darkMode ? "bg-gray-800" : "bg-white"}`}>
+          <p className={`mb-3 md:mb-4 text-sm md:text-base ${darkMode ? "text-gray-400" : "text-gray-600"}`}>Ready to order? Contact us to place your custom cupcake order!</p>
           <MotionLink
             to="/contact"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 300 }}
-            className="inline-block bg-pink-500 text-white px-6 py-2 rounded-xl hover:bg-pink-600"
+            className={`inline-block px-6 py-2 rounded-xl transition ${
+              darkMode
+                ? "bg-pink-600 text-white hover:bg-pink-700"
+                : "bg-pink-500 text-white hover:bg-pink-600"
+            }`}
           >
             Contact Us
           </MotionLink>
