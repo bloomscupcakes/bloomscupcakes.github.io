@@ -9,6 +9,7 @@ import redVelvet from "../assets/redvelvet.png";
 import classicFrosting from "../assets/six_pack_classic.jpeg";
 import floralFrosting from "../assets/six_pack_floral.jpeg";
 import customOrder from "../assets/custom_order.jpeg";
+import { trackEvent } from "../utils/analytics";
 
 /* Load all images from gallery */
 const images = import.meta.glob("../gallery/*.{jpg,jpeg,png}", {
@@ -81,6 +82,11 @@ export default function Home({ darkMode }) {
 
           <Link
             to="/order"
+            onClick={() =>
+              trackEvent("cta_click_order", {
+                location: "hero_section",
+              })
+            }
             className={`px-8 py-3 rounded-xl shadow-lg transition hover:scale-105 ${darkMode
                 ? "bg-pink-600 text-white hover:bg-pink-700"
                 : "bg-pink-500 text-white hover:bg-pink-600"
@@ -268,6 +274,11 @@ export default function Home({ darkMode }) {
         <div className="text-center mb-12">
           <Link
             to="/order"
+            onClick={() =>
+              trackEvent("cta_click_order", {
+                location: "pack_info_section",
+              })
+            }
             className={`inline-block px-10 py-4 text-lg rounded-xl font-semibold shadow-lg transition hover:scale-105 ${darkMode
                 ? "bg-pink-600 text-white hover:bg-pink-700"
                 : "bg-pink-500 text-white hover:bg-pink-600"
@@ -306,6 +317,12 @@ export default function Home({ darkMode }) {
 
               <Link
                 to="/contact"
+                onClick={() =>
+                  trackEvent("cta_click_order", {
+                    location: "custom_order_section",
+                  })
+                }
+
                 className={`inline-block px-6 py-2 rounded-lg font-medium border transition hover:scale-105 ${darkMode
                     ? "border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-white"
                     : "border-pink-500 text-pink-600 hover:bg-pink-500 hover:text-white"

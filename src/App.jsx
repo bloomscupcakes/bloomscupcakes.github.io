@@ -16,12 +16,14 @@ import TermsAndConditions from "./pages/TermsAndConditions";
 function AnalyticsTracker() {
   const location = useLocation();
 
-  useEffect(() => {
-    window.gtag("config", "G-QJC1ND04KX", {
-      page_path: location.pathname,
-    });
+ useEffect(() => {
+    if (window.gtag) {
+      window.gtag("event", "page_view", {
+        page_path: location.pathname,
+      });
+    }
   }, [location]);
-
+  
   return null;
 }
 

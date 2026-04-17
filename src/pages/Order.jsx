@@ -1,23 +1,20 @@
 import { motion } from "framer-motion";
 import { FaInstagram, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { useEffect } from "react";
+import { trackEvent } from "../utils/analytics";
 
 export default function Order({ darkMode }) {
-    useEffect(() => {
-    if (window.gtag) {
-      window.gtag("event", "conversion_order_page", {
-        event_category: "conversion",
-        event_label: "Reached Order Page",
-      });
-    }
+  useEffect(() => {
+   trackEvent("view_order_page", {
+      funnel_step: "intent",
+    });
   }, []);
 
   return (
-    <div className={`min-h-screen px-6 py-16 ${
-      darkMode
+    <div className={`min-h-screen px-6 py-16 ${darkMode
         ? "bg-gray-900 text-gray-100"
         : "bg-[#FFF7F9] text-[#2B2B2B]"
-    }`}>
+      }`}>
 
       {/* Header */}
       <motion.div
@@ -26,15 +23,13 @@ export default function Order({ darkMode }) {
         transition={{ duration: 0.6 }}
         className="text-center max-w-2xl mx-auto"
       >
-        <h1 className={`text-5xl font-bold mb-4 ${
-          darkMode ? "text-pink-400" : "text-[#E85D75]"
-        }`}>
+        <h1 className={`text-5xl font-bold mb-4 ${darkMode ? "text-pink-400" : "text-[#E85D75]"
+          }`}>
           Place an Order 🧁
         </h1>
 
-        <p className={`text-lg ${
-          darkMode ? "text-gray-400" : "text-gray-600"
-        }`}>
+        <p className={`text-lg ${darkMode ? "text-gray-400" : "text-gray-600"
+          }`}>
           We’re currently taking orders through Instagram, email, or phone.
           Reach out and we’ll help you create the perfect cupcakes for your occasion.
         </p>
@@ -84,15 +79,13 @@ export default function Order({ darkMode }) {
               show: { opacity: 1, y: 0 },
             }}
             whileHover={{ scale: 1.05 }}
-            className={`rounded-2xl p-6 text-center shadow-md hover:shadow-lg transition border ${
-              darkMode
+            className={`rounded-2xl p-6 text-center shadow-md hover:shadow-lg transition border ${darkMode
                 ? "bg-gray-800 border-pink-700 text-gray-100"
                 : "bg-white border-[#F7B2C4]"
-            }`}
+              }`}
           >
-            <div className={`flex justify-center mb-4 ${
-              darkMode ? "text-pink-400" : "text-[#E85D75]"
-            }`}>
+            <div className={`flex justify-center mb-4 ${darkMode ? "text-pink-400" : "text-[#E85D75]"
+              }`}>
               {item.icon}
             </div>
 
@@ -100,9 +93,8 @@ export default function Order({ darkMode }) {
               {item.title}
             </h3>
 
-            <p className={`text-sm ${
-              darkMode ? "text-gray-400" : "text-gray-600"
-            }`}>
+            <p className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-600"
+              }`}>
               {item.text}
             </p>
           </motion.a>
