@@ -4,11 +4,12 @@ import { useEffect } from "react";
 import { trackEvent } from "../utils/analytics";
 
 export default function Order({ darkMode }) {
-  useEffect(() => {
-   trackEvent("view_order_page", {
-      funnel_step: "intent",
-    });
-  }, []);
+  // Helper to track contact clicks for Google Ads
+  const google_ad_lead = (method) => {
+    trackEvent("generate_lead", { 
+      contact_method: method 
+    }, true);
+  };
 
   return (
     <div className={`min-h-screen px-6 py-16 ${darkMode

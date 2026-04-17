@@ -4,15 +4,7 @@ import { SiGmail } from "react-icons/si";
 import { useEffect } from "react";
 
 export default function Contact({ darkMode }) {
-  useEffect(() => {
-      if (window.gtag) {
-        window.gtag("event", "conversion_contact_page", {
-          event_category: "conversion",
-          event_label: "Reached Contact Page",
-        });
-      }
-    }, []);
-
+  
   return (
     <div className={`px-6 py-8 ${
       darkMode ? "bg-gray-900 min-h-screen" : "bg-gray-50"

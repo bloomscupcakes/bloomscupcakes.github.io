@@ -37,7 +37,7 @@ const reviews = [
 
 export default function Home({ darkMode }) {
   const [heroImg, setHeroImg] = useState(null);
-
+  
   /* Pick random cover image once */
   useEffect(() => {
     if (imageList.length > 0) {
@@ -276,7 +276,7 @@ export default function Home({ darkMode }) {
             to="/order"
             onClick={() =>
               trackEvent("cta_click_order", {
-                location: "pack_info_section",
+                location: "pack_infosection",
               })
             }
             className={`inline-block px-10 py-4 text-lg rounded-xl font-semibold shadow-lg transition hover:scale-105 ${darkMode
@@ -317,10 +317,12 @@ export default function Home({ darkMode }) {
 
               <Link
                 to="/contact"
-                onClick={() =>
+                onClick={() => {
                   trackEvent("cta_click_order", {
                     location: "custom_order_section",
-                  })
+                  });
+                  trackEvent("generate_lead", { type: "custom_inquiry" }, true);
+                }
                 }
 
                 className={`inline-block px-6 py-2 rounded-lg font-medium border transition hover:scale-105 ${darkMode
