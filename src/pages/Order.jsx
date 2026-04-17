@@ -1,7 +1,17 @@
 import { motion } from "framer-motion";
 import { FaInstagram, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
+import { useEffect } from "react";
 
 export default function Order({ darkMode }) {
+    useEffect(() => {
+    if (window.gtag) {
+      window.gtag("event", "conversion_order_page", {
+        event_category: "conversion",
+        event_label: "Reached Order Page",
+      });
+    }
+  }, []);
+
   return (
     <div className={`min-h-screen px-6 py-16 ${
       darkMode

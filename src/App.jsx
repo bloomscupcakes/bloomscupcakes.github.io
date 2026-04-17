@@ -13,6 +13,18 @@ import Gallery from "./pages/Gallery";
 import AlergenInfo from "./pages/AlergenInfo";
 import TermsAndConditions from "./pages/TermsAndConditions";
 
+function AnalyticsTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    window.gtag("config", "G-QJC1ND04KX", {
+      page_path: location.pathname,
+    });
+  }, [location]);
+
+  return null;
+}
+
 export default function App() {
   const location = useLocation();
   const [darkMode, setDarkMode] = useState(() => {
@@ -33,6 +45,8 @@ export default function App() {
 
   return (
     <div className={`${darkMode ? "bg-gray-900" : "bg-white"} min-h-screen transition-colors duration-300`}>
+     <AnalyticsTracker />
+
       <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
       <main className="max-w-6xl mx-auto px-4 py-6">

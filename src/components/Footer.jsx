@@ -16,7 +16,7 @@ export default function Footer({ darkMode }) {
             <h2 className={`text-xl font-bold ${
               darkMode ? "text-pink-400" : "text-pink-500"
             }`}>
-              Blooms Cupcakes 🧁
+              Blooms Cupcakes
             </h2>
 
             <p className={`mt-2 ${

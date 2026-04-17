@@ -46,7 +46,6 @@ export default function AllergenInfo({ darkMode }) {
                   <th className="p-2">Milk</th>
                   <th className="p-2">Eggs</th>
                   <th className="p-2">Wheat</th>
-                  <th className="p-2">Sugar</th>
                   <th className="p-2">Nuts</th>
                   <th className="p-2">Soy</th>
                 </tr>
@@ -54,10 +53,10 @@ export default function AllergenInfo({ darkMode }) {
 
               <tbody>
                 {[
-                  ["Vanilla Cupcake", "✔", "✔", "✔", "✔", "✖", "✖"],
-                  ["Chocolate Cupcake", "✔", "✔", "✔", "✔", "✖", "✔"],
-                  ["Red Velvet Cupcake", "✔", "✔", "✔", "✔", "✖", "✔"],
-                  ["Floral Topping", "✔", "✔", "✖", "✔", "✖", "✖"],
+                  ["Vanilla Cupcake", "✔", "✔", "✔", "✖", "✖"],
+                  ["Chocolate Cupcake", "✔", "✔", "✔","✖", "✔"],
+                  ["Red Velvet Cupcake", "✔", "✔", "✔", "✖", "✔"],
+                  ["Floral Topping", "✔", "✔", "✖", "✖", "✖"],
                 ].map((row, i) => (
                   <tr key={i} className={`border-b ${
                     darkMode ? "border-gray-600" : "border-gray-300"

@@ -16,6 +16,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
     { name: "Home", to: "/" },
     { name: "Gallery", to: "/gallery" },
     { name: "Order Now", to: "/order" },
+    { name: "Allergen Info", to: "/alergen-info" },
     { name: "Contact Us", to: "/contact" },
   ];
 
@@ -44,7 +45,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
               darkMode ? "text-pink-400" : "text-pink-500"
             }`}
           >
-            Blooms Cupcakes 🧁
+            Blooms Cupcakes
           </Link>
 
           {/* CENTER-LEFT: Nav links */}
