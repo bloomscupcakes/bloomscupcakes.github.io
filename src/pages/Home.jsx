@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import vanilla from "../assets/vanilla.png";
 import chocolate from "../assets/chocolate.png";
 import redVelvet from "../assets/redvelvet.png";
-import classicFrosting from "../assets/six_pack_classic.jpeg";
-import floralFrosting from "../assets/six_pack_floral.jpeg";
+import classicPack6 from "../assets/six_pack_classic.jpeg";
+import floralPack6 from "../gallery/pack_of_6.jpeg";
+import floralPack12 from "../gallery/midnight_packof12.jpeg";
+import bouqet22Pack from "../gallery/bouquet22.jpeg";
 import customOrder from "../assets/custom_order.jpeg";
 import { trackEvent } from "../utils/analytics";
 
@@ -17,6 +19,30 @@ const images = import.meta.glob("../gallery/*.{jpg,jpeg,png}", {
 });
 
 const imageList = Object.values(images);
+
+/* Our packs */
+const cupcakePacks = [
+  {
+    title: "6 Pack Floral Cupcakes",
+    price: "$30 CAD",
+    img: floralPack6,
+  },
+  {
+    title: "12 Pack Floral Cupcakes",
+    price: "$60 CAD",
+    img: floralPack12,
+  },
+  {
+    title: "Cupcake Bouquet",
+    price: "Starting at $50 CAD",
+    img: bouqet22Pack,
+  },
+  {
+    title: "6 Pack Classic Cupcakes",
+    price: "$20 CAD",
+    img: classicPack6,
+  },
+];
 
 /* Fake reviews */
 const reviews = [
@@ -36,21 +62,21 @@ const reviews = [
 
 export default function Home({ darkMode }) {
   const [heroImg, setHeroImg] = useState(null);
-  
+
   /* Out Gallery section data */
-const [selectedIndex, setSelectedIndex] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
-const isOpen = selectedIndex !== null;
+  const isOpen = selectedIndex !== null;
 
-const close = () => setSelectedIndex(null);
+  const close = () => setSelectedIndex(null);
 
-const next = () =>
-  setSelectedIndex((prev) => (prev + 1) % imageList.length);
+  const next = () =>
+    setSelectedIndex((prev) => (prev + 1) % imageList.length);
 
-const prev = () =>
-  setSelectedIndex((prev) =>
-    prev === 0 ? imageList.length - 1 : prev - 1
-  );
+  const prev = () =>
+    setSelectedIndex((prev) =>
+      prev === 0 ? imageList.length - 1 : prev - 1
+    );
 
 
   /* Pick random cover image once */
@@ -103,8 +129,8 @@ const prev = () =>
               })
             }
             className={`px-8 py-3 rounded-xl shadow-lg transition hover:scale-105 ${darkMode
-                ? "bg-pink-600 text-white hover:bg-pink-700"
-                : "bg-pink-500 text-white hover:bg-pink-600"
+              ? "bg-pink-600 text-white hover:bg-pink-700"
+              : "bg-pink-500 text-white hover:bg-pink-600"
               }`}
           >
             Pre Order Now
@@ -124,8 +150,8 @@ const prev = () =>
               whileHover={{ scale: 1.05 }}
               onClick={() => setSelectedIndex(i)}
               className={`rounded-2xl overflow-hidden shadow-md cursor-pointer ${darkMode
-                  ? "bg-gray-800 border border-pink-700"
-                  : "bg-white border border-[#F7B2C4]"
+                ? "bg-gray-800 border border-pink-700"
+                : "bg-white border border-[#F7B2C4]"
                 }`}
             >
               <img src={img} className="h-64 w-full object-cover" />
@@ -136,8 +162,8 @@ const prev = () =>
           <Link
             to="/gallery"
             className={`px-6 py-3 rounded-xl font-semibold shadow-md transition hover:scale-105 ${darkMode
-                ? "bg-pink-700 text-white hover:bg-pink-800"
-                : "bg-[#E85D75] text-white hover:bg-[#d94f68]"
+              ? "bg-pink-700 text-white hover:bg-pink-800"
+              : "bg-[#E85D75] text-white hover:bg-[#d94f68]"
               }`}
           >
             View Full Gallery
@@ -145,7 +171,6 @@ const prev = () =>
         </div>
       </section>
 
-      {/* <CupcakeBuilder darkMode={darkMode} /> */}
       {/* ================= OUR CUPCAKES ================= */}
       <section className="px-4 sm:px-6 py-12">
         <h2
@@ -155,59 +180,34 @@ const prev = () =>
           Our packs & flavours
         </h2>
 
-        {/* ===== PACK TYPES ===== */}
         <div className="grid md:grid-cols-2 gap-6 mb-10">
-          {/* Classic Pack */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className={`rounded-2xl overflow-hidden shadow-lg ${darkMode
+          {cupcakePacks.map((pack, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ scale: 1.05 }}
+              className={`rounded-2xl overflow-hidden shadow-lg ${darkMode
                 ? "bg-gray-800 border border-pink-700 text-white"
                 : "bg-white border border-pink-200 text-gray-800"
-              }`}
-          >
-            <img
-              src={classicFrosting}
-              className="h-56 w-full object-cover"
-              alt="Classic Cupcakes"
-            />
-            <div className="p-5 text-center">
-              <h4 className="text-xl font-bold mb-2">
-                6 Pack Classic Cupcakes
-              </h4>
-              <p
-                className={`text-lg font-semibold ${darkMode ? "text-pink-400" : "text-pink-500"
-                  }`}
-              >
-                $20 CAD
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Floral Pack */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className={`rounded-2xl overflow-hidden shadow-lg ${darkMode
-                ? "bg-gray-800 border border-pink-700 text-white"
-                : "bg-white border border-pink-200 text-gray-800"
-              }`}
-          >
-            <img
-              src={floralFrosting}
-              className="h-56 w-full object-cover"
-              alt="Floral Cupcakes"
-            />
-            <div className="p-5 text-center">
-              <h4 className="text-xl font-bold mb-2">
-                6 Pack Floral Cupcakes
-              </h4>
-              <p
-                className={`text-lg font-semibold ${darkMode ? "text-pink-400" : "text-pink-500"
-                  }`}
-              >
-                $30 CAD
-              </p>
-            </div>
-          </motion.div>
+                }`}
+            >
+              <img
+                src={pack.img}
+                className="h-56 w-full object-cover"
+                alt={pack.title}
+              />
+              <div className="p-5 text-center">
+                <h4 className="text-xl font-bold mb-2">
+                  {pack.title}
+                </h4>
+                <p
+                  className={`text-lg font-semibold ${darkMode ? "text-pink-400" : "text-pink-500"
+                    }`}
+                >
+                  {pack.price}
+                </p>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
         {/* ===== FLAVOURS ===== */}
@@ -223,8 +223,8 @@ const prev = () =>
           <motion.div
             whileHover={{ scale: 1.04 }}
             className={`flex items-center gap-4 p-3 rounded-xl shadow ${darkMode
-                ? "bg-gray-800 border border-pink-700 text-white"
-                : "bg-white border border-pink-200 text-gray-800"
+              ? "bg-gray-800 border border-pink-700 text-white"
+              : "bg-white border border-pink-200 text-gray-800"
               }`}
           >
             <img
@@ -239,8 +239,8 @@ const prev = () =>
           <motion.div
             whileHover={{ scale: 1.04 }}
             className={`flex items-center gap-4 p-3 rounded-xl shadow ${darkMode
-                ? "bg-gray-800 border border-pink-700 text-white"
-                : "bg-white border border-pink-200 text-gray-800"
+              ? "bg-gray-800 border border-pink-700 text-white"
+              : "bg-white border border-pink-200 text-gray-800"
               }`}
           >
             <img
@@ -255,8 +255,8 @@ const prev = () =>
           <motion.div
             whileHover={{ scale: 1.04 }}
             className={`flex items-center gap-4 p-3 rounded-xl shadow ${darkMode
-                ? "bg-gray-800 border border-pink-700 text-white"
-                : "bg-white border border-pink-200 text-gray-800"
+              ? "bg-gray-800 border border-pink-700 text-white"
+              : "bg-white border border-pink-200 text-gray-800"
               }`}
           >
             <img
@@ -275,14 +275,22 @@ const prev = () =>
             </div>
           </motion.div>
         </div>
+
         {/* ===== PACK INFO ===== */}
         <div className="text-center mb-8">
           <p
             className={`text-lg ${darkMode ? "text-gray-300" : "text-gray-700"
               }`}
           >
-            Mix & match flavours in packs of{" "}
+            Available in packs of{" "}
             <span className="font-semibold">4, 6, or 12</span> cupcakes
+          </p>
+          <p
+            className={`text-lg ${darkMode ? "text-gray-300" : "text-gray-700"
+              }`}
+          >
+            Mix and match flavours for additional {" "}
+            <span className="font-semibold">$5</span> CAD
           </p>
         </div>
 
@@ -296,8 +304,8 @@ const prev = () =>
               })
             }
             className={`inline-block px-10 py-4 text-lg rounded-xl font-semibold shadow-lg transition hover:scale-105 ${darkMode
-                ? "bg-pink-600 text-white hover:bg-pink-700"
-                : "bg-pink-500 text-white hover:bg-pink-600"
+              ? "bg-pink-600 text-white hover:bg-pink-700"
+              : "bg-pink-500 text-white hover:bg-pink-600"
               }`}
           >
             Customize & Order
@@ -309,8 +317,8 @@ const prev = () =>
           <motion.div
             whileHover={{ scale: 1.03 }}
             className={`rounded-2xl overflow-hidden shadow-lg ${darkMode
-                ? "bg-gray-800 border border-pink-700 text-white"
-                : "bg-white border border-pink-200 text-gray-800"
+              ? "bg-gray-800 border border-pink-700 text-white"
+              : "bg-white border border-pink-200 text-gray-800"
               }`}
           >
             <img
@@ -342,8 +350,8 @@ const prev = () =>
                 }
 
                 className={`inline-block px-6 py-2 rounded-lg font-medium border transition hover:scale-105 ${darkMode
-                    ? "border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-white"
-                    : "border-pink-500 text-pink-600 hover:bg-pink-500 hover:text-white"
+                  ? "border-pink-500 text-pink-400 hover:bg-pink-500 hover:text-white"
+                  : "border-pink-500 text-pink-600 hover:bg-pink-500 hover:text-white"
                   }`}
               >
                 Request Custom Order
@@ -399,63 +407,63 @@ const prev = () =>
           />
         </div>
       </section>
-{isOpen && (
-  <div
-    className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
-    onClick={close}
-  >
-    {/* Image */}
-    <img
-      src={imageList[selectedIndex]}
-      className="max-w-[90%] max-h-[80%] rounded-xl shadow-xl"
-      onClick={(e) => e.stopPropagation()}
-    />
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+          onClick={close}
+        >
+          {/* Image */}
+          <img
+            src={imageList[selectedIndex]}
+            className="max-w-[90%] max-h-[80%] rounded-xl shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          />
 
-    {/* Close */}
-    <button
-      onClick={close}
-      className="absolute top-6 right-6 text-white text-3xl"
-    >
-      ✕
-    </button>
+          {/* Close */}
+          <button
+            onClick={close}
+            className="absolute top-6 right-6 text-white text-3xl"
+          >
+            ✕
+          </button>
 
-    {/* Prev */}
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        prev();
-      }}
-      className="absolute left-6 text-white text-4xl"
-    >
-      ‹
-    </button>
+          {/* Prev */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              prev();
+            }}
+            className="absolute left-6 text-white text-4xl"
+          >
+            ‹
+          </button>
 
-    {/* Next */}
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        next();
-      }}
-      className="absolute right-6 text-white text-4xl"
-    >
-      ›
-    </button>
+          {/* Next */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              next();
+            }}
+            className="absolute right-6 text-white text-4xl"
+          >
+            ›
+          </button>
 
-    {/* CTA inside modal */}
-    <div className="absolute bottom-10 w-full flex justify-center">
-      <Link
-        to="/gallery"
-        onClick={(e) => {
-          e.stopPropagation();
-          trackEvent("cta_click_gallery_modal");
-        }}
-        className="px-6 py-3 bg-pink-600 text-white rounded-xl shadow-lg hover:bg-pink-700 transition"
-      >
-        View Full Gallery
-      </Link>
-    </div>
-  </div>
-)}
+          {/* CTA inside modal */}
+          <div className="absolute bottom-10 w-full flex justify-center">
+            <Link
+              to="/gallery"
+              onClick={(e) => {
+                e.stopPropagation();
+                trackEvent("cta_click_gallery_modal");
+              }}
+              className="px-6 py-3 bg-pink-600 text-white rounded-xl shadow-lg hover:bg-pink-700 transition"
+            >
+              View Full Gallery
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
