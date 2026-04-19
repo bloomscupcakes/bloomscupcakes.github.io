@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import CupcakeBuilder from "./CupcakeSelector";
 
 import vanilla from "../assets/vanilla.png";
 import chocolate from "../assets/chocolate.png";
