@@ -96,7 +96,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                     : "bg-pink-500 text-white hover:bg-pink-600"
                 }`}
               >
-                Order Now
+                Pre Order Now
               </Link>
             </motion.div>
           </div>
@@ -162,7 +162,7 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                     : "bg-pink-500 text-white hover:bg-pink-600"
                 }`}
               >
-                Order Now
+                Pre Order Now
               </Link>
             </div>
           </motion.div>

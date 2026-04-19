@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { trackEvent } from "../utils/analytics";
 
 const images = import.meta.glob("../gallery/*.{jpg,jpeg,png}", {
   eager: true,
@@ -158,6 +159,23 @@ const Gallery = ({ darkMode }) => {
           </button>
         </div>
       )}
+      <div className="flex justify-center py-10">
+
+        <Link
+          to="/order"
+          onClick={() =>
+            trackEvent("cta_click_order", {
+              location: "hero_section",
+            })
+          }
+          className={`px-8 py-3 rounded-xl shadow-lg transition hover:scale-105 ${darkMode
+            ? "bg-pink-600 text-white hover:bg-pink-700"
+            : "bg-pink-500 text-white hover:bg-pink-600"
+            }`}
+        >
+          Pre Order Now
+        </Link>
+      </div>
     </div>
   );
 };

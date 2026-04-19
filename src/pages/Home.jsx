@@ -11,7 +11,7 @@ import floralFrosting from "../assets/six_pack_floral.jpeg";
 import customOrder from "../assets/custom_order.jpeg";
 import { trackEvent } from "../utils/analytics";
 
-/* Load all images from gallery */
+/* Load all images from gallery folder */
 const images = import.meta.glob("../gallery/*.{jpg,jpeg,png}", {
   eager: true,
   import: "default",
@@ -38,6 +38,22 @@ const reviews = [
 export default function Home({ darkMode }) {
   const [heroImg, setHeroImg] = useState(null);
   
+  /* Out Gallery section data */
+const [selectedIndex, setSelectedIndex] = useState(null);
+
+const isOpen = selectedIndex !== null;
+
+const close = () => setSelectedIndex(null);
+
+const next = () =>
+  setSelectedIndex((prev) => (prev + 1) % imageList.length);
+
+const prev = () =>
+  setSelectedIndex((prev) =>
+    prev === 0 ? imageList.length - 1 : prev - 1
+  );
+
+
   /* Pick random cover image once */
   useEffect(() => {
     if (imageList.length > 0) {
@@ -92,7 +108,7 @@ export default function Home({ darkMode }) {
                 : "bg-pink-500 text-white hover:bg-pink-600"
               }`}
           >
-            Order Now
+            Pre Order Now
           </Link>
         </div>
       </motion.section>
@@ -107,7 +123,8 @@ export default function Home({ darkMode }) {
             <motion.div
               key={i}
               whileHover={{ scale: 1.05 }}
-              className={`rounded-2xl overflow-hidden shadow-md ${darkMode
+              onClick={() => setSelectedIndex(i)}
+              className={`rounded-2xl overflow-hidden shadow-md cursor-pointer ${darkMode
                   ? "bg-gray-800 border border-pink-700"
                   : "bg-white border border-[#F7B2C4]"
                 }`}
@@ -383,7 +400,63 @@ export default function Home({ darkMode }) {
           />
         </div>
       </section>
+{isOpen && (
+  <div
+    className="fixed inset-0 bg-black/90 flex items-center justify-center z-50"
+    onClick={close}
+  >
+    {/* Image */}
+    <img
+      src={imageList[selectedIndex]}
+      className="max-w-[90%] max-h-[80%] rounded-xl shadow-xl"
+      onClick={(e) => e.stopPropagation()}
+    />
 
+    {/* Close */}
+    <button
+      onClick={close}
+      className="absolute top-6 right-6 text-white text-3xl"
+    >
+      ✕
+    </button>
+
+    {/* Prev */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        prev();
+      }}
+      className="absolute left-6 text-white text-4xl"
+    >
+      ‹
+    </button>
+
+    {/* Next */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        next();
+      }}
+      className="absolute right-6 text-white text-4xl"
+    >
+      ›
+    </button>
+
+    {/* CTA inside modal */}
+    <div className="absolute bottom-10 w-full flex justify-center">
+      <Link
+        to="/gallery"
+        onClick={(e) => {
+          e.stopPropagation();
+          trackEvent("cta_click_gallery_modal");
+        }}
+        className="px-6 py-3 bg-pink-600 text-white rounded-xl shadow-lg hover:bg-pink-700 transition"
+      >
+        View Full Gallery
+      </Link>
+    </div>
+  </div>
+)}
     </div>
   );
 }
