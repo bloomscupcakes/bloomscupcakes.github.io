@@ -13,6 +13,7 @@ import Gallery from "./pages/Gallery";
 import AlergenInfo from "./pages/AlergenInfo";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import Submitted from "./pages/Submitted";
+import ShowOrders from "./pages/ShowOrders";
 import { CartProvider } from "./contexts/CartContext";
 
 function AnalyticsTracker() {
@@ -94,6 +95,7 @@ export default function App() {
               <Route path="/alergen-info" element={<AlergenInfo darkMode={darkMode} />} />
               <Route path="/terms-and-conditions" element={<TermsAndConditions darkMode={darkMode} />} />
               <Route path="/submitted" element={<Submitted darkMode={darkMode} />} />
+              <Route path="/showorders" element={<ShowOrders darkMode={darkMode} />} />
               <Route path="/bloomscupcakes" element={<Home darkMode={darkMode} />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

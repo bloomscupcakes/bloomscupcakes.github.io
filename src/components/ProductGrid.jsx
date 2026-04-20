@@ -47,7 +47,7 @@ export default function ProductGrid({ darkMode }) {
             <img src={product.packSizes[0].img} alt={product.title} className="w-full h-64 object-cover" />
             
             <div className="p-6">
-              <h3 className="text-xl font-black mb-2">{product.title}</h3>
+              <h3 className={`text-xl font-black mb-2 ${darkMode ? "text-white" : "text-gray-900"}`}>{product.title}</h3>
               
               {/* Pack Size Selector */}
               <div className="flex flex-wrap gap-2 mb-4">
@@ -58,7 +58,7 @@ export default function ProductGrid({ darkMode }) {
                     className={`px-3 py-1 text-xs font-bold rounded-full border transition-all ${
                       (selectedPack[product.id]?.name === ps.name || (!selectedPack[product.id] && product.packSizes[0].name === ps.name))
                       ? "bg-pink-500 border-pink-500 text-white"
-                      : "border-gray-200 text-gray-500"
+                      : darkMode ? "border-gray-600 text-gray-400 hover:border-gray-500" : "border-gray-200 text-gray-500 hover:border-gray-300"
                     }`}
                   >
                     {ps.name}
@@ -75,7 +75,7 @@ export default function ProductGrid({ darkMode }) {
                     className={`px-3 py-1 text-xs font-bold rounded-full border transition-all ${
                       (selectedFlavour[product.id]?.label === fl.label || (!selectedFlavour[product.id] && FLAVOURS[0].label === fl.label))
                       ? "bg-pink-500 border-pink-500 text-white"
-                      : "border-gray-200 text-gray-500"
+                      : darkMode ? "border-gray-600 text-gray-400 hover:border-gray-500" : "border-gray-200 text-gray-500 hover:border-gray-300"
                     }`}
                   >
                     {fl.label} {fl.extra > 0 && `+$${fl.extra}`}
@@ -84,7 +84,7 @@ export default function ProductGrid({ darkMode }) {
               </div>
 
               <div className="flex items-center justify-between mt-6">
-                <span className="text-2xl font-black text-pink-600">
+                <span className={`text-2xl font-black ${darkMode ? "text-pink-400" : "text-pink-600"}`}>
                   ${getPrice(product).toFixed(2)}
                 </span>
                 <button 

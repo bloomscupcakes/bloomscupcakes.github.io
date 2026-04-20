@@ -141,8 +141,8 @@ export default function Cart({ darkMode }) {
       {/* ================= STEP 2 & 3: CART SUMMARY & CONTACT FORM ================= */}
       <div className="max-w-5xl mx-auto grid lg:grid-cols-5 gap-12 mt-16 border-t pt-16">
 
-        {/* LEFT COLUMN: THE BOX (CART) - Taking 3/5 of space */}
-        <div id="cart-section" className="lg:col-span-3">
+        {/* LEFT COLUMN: THE BOX (CART) - Taking 2/5 of space */}
+        <div id="cart-section" className="lg:col-span-2">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl font-black text-pink-500 uppercase italic tracking-tighter">Your Cart</h2>
             <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${darkMode ? "bg-gray-800" : "bg-pink-100 text-pink-600"}`}>
@@ -253,12 +253,12 @@ export default function Cart({ darkMode }) {
           )}
         </div>
 
-        {/* RIGHT COLUMN: CONTACT FORM - Taking 2/5 of space */}
-        <div className="lg:col-span-2">
+        {/* RIGHT COLUMN: CONTACT FORM - Taking 3/5 of space */}
+        <div className="lg:col-span-3">
           {cart.length > 0 && (
             <form
               onSubmit={handleOrderSubmission}
-              className={`p-8 rounded-[2.5rem] shadow-2xl border-2 sticky top-24 ${darkMode ? "bg-gray-800 border-pink-900 shadow-pink-900/10" : "bg-white border-pink-100 shadow-pink-200/40"
+              className={`p-6 rounded-[2.5rem] shadow-2xl border-2 sticky top-24 ${darkMode ? "bg-gray-800 border-pink-900 shadow-pink-900/10" : "bg-white border-pink-100 shadow-pink-200/40"
                 }`}
             >
               <h2 className="text-2xl font-black mb-8 text-center uppercase tracking-tight italic">3. Final Details</h2>
@@ -279,7 +279,7 @@ export default function Cart({ darkMode }) {
                   </div>
                 </div>
 
-                <div className="p-4 bg-pink-50/50 dark:bg-gray-900/50 rounded-2xl border border-pink-100 dark:border-gray-700">
+                <div className={`p-4 rounded-2xl border ${darkMode ? "bg-gray-900/50 border-gray-700" : "bg-pink-50/50 border-pink-100"}`}>
                   <label className="text-[10px] font-black text-pink-500 uppercase block mb-2">Preferred Contact Method</label>
                   <div className="flex gap-6">
                     {["Email", "Phone"].map(m => (
