@@ -1,20 +1,21 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 
 import Navbar from "./components/Navbar";
-
-import Home from "./pages/Home";
-import Cart from "./pages/Cart";
-import Contact from "./pages/Contact";
-import NotFound from "./pages/NotFound";
 import Footer from "./components/Footer";
-import Gallery from "./pages/Gallery";
-import AlergenInfo from "./pages/AlergenInfo";
-import TermsAndConditions from "./pages/TermsAndConditions";
-import Submitted from "./pages/Submitted";
-import ShowOrders from "./pages/ShowOrders";
+import Loader from "./components/Loader";
 import { CartProvider } from "./contexts/CartContext";
+
+const Home = lazy(() => import("./pages/Home"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Contact = lazy(() => import("./pages/Contact"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Gallery = lazy(() => import("./pages/Gallery"));
+const AlergenInfo = lazy(() => import("./pages/AlergenInfo"));
+const TermsAndConditions = lazy(() => import("./pages/TermsAndConditions"));
+const Submitted = lazy(() => import("./pages/Submitted"));
+const ShowOrders = lazy(() => import("./pages/ShowOrders"));
 
 function AnalyticsTracker() {
   const location = useLocation();
@@ -87,18 +88,20 @@ export default function App() {
 
         <main className="max-w-6xl mx-auto px-4 py-6">
           <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route path="/" element={<Home darkMode={darkMode} />} />
-              <Route path="/cart" element={<Cart darkMode={darkMode} />} />
-              <Route path="/contact" element={<Contact darkMode={darkMode} />} />
-              <Route path="/gallery" element={<Gallery darkMode={darkMode} />} />
-              <Route path="/alergen-info" element={<AlergenInfo darkMode={darkMode} />} />
-              <Route path="/terms-and-conditions" element={<TermsAndConditions darkMode={darkMode} />} />
-              <Route path="/submitted" element={<Submitted darkMode={darkMode} />} />
-              <Route path="/showorders" element={<ShowOrders darkMode={darkMode} />} />
-              <Route path="/bloomscupcakes" element={<Home darkMode={darkMode} />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Suspense fallback={<div className="flex min-h-[50vh] items-center justify-center"><Loader type="cupcake" size="lg" /></div>}>
+              <Routes location={location} key={location.pathname}>
+                <Route path="/" element={<Home darkMode={darkMode} />} />
+                <Route path="/cart" element={<Cart darkMode={darkMode} />} />
+                <Route path="/contact" element={<Contact darkMode={darkMode} />} />
+                <Route path="/gallery" element={<Gallery darkMode={darkMode} />} />
+                <Route path="/alergen-info" element={<AlergenInfo darkMode={darkMode} />} />
+                <Route path="/terms-and-conditions" element={<TermsAndConditions darkMode={darkMode} />} />
+                <Route path="/submitted" element={<Submitted darkMode={darkMode} />} />
+                <Route path="/showorders" element={<ShowOrders darkMode={darkMode} />} />
+                <Route path="/bloomscupcakes" element={<Home darkMode={darkMode} />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </AnimatePresence>
         </main>
 
