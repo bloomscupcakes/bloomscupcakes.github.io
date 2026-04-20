@@ -66,14 +66,14 @@ export default function Cart({ darkMode }) {
     const formData = new FormData(e.target);
 
     try {
+      // Inside your handleOrderSubmission try block:
       const orderItems = cart.map(i => ({
         productTitle: i.title,
         packSize: `${i.selectedPackSize} Pack`,
         flavour: i.selectedFlavour,
-        quantity: i.quantity,
-        priceAtPurchase: calculateItemPrice(i)
+        quantity: Number(i.quantity), // Force number
+        priceAtPurchase: calculateItemPrice(i).toFixed(2) // Save as string with 2 decimals
       }));
-
       const finalOrder = {
         customer: {
           name: formData.get("name"),
