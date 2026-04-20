@@ -5,12 +5,11 @@ import { useEffect, useState } from "react";
 import vanilla from "../assets/vanilla.png";
 import chocolate from "../assets/chocolate.png";
 import redVelvet from "../assets/redvelvet.png";
-import classicPack6 from "../assets/six_pack_classic.jpeg";
-import floralPack6 from "../gallery/pack_of_6.jpeg";
-import floralPack12 from "../gallery/midnight_packof12.jpeg";
-import bouqet22Pack from "../gallery/bouquet22.jpeg";
 import customOrder from "../assets/custom_order.jpeg";
 import { trackEvent } from "../utils/analytics";
+import { PRODUCTS, FLAVOURS, reviews } from "../utils/config";
+import Loader from "../components/Loader";
+import ProductGrid from "../components/ProductGrid";
 
 /* Load all images from gallery folder */
 const images = import.meta.glob("../gallery/*.{jpg,jpeg,png}", {
@@ -20,51 +19,17 @@ const images = import.meta.glob("../gallery/*.{jpg,jpeg,png}", {
 
 const imageList = Object.values(images);
 
-/* Our packs */
-const cupcakePacks = [
-  {
-    title: "6 Pack Floral Cupcakes",
-    price: "$30 CAD",
-    img: floralPack6,
-  },
-  {
-    title: "12 Pack Floral Cupcakes",
-    price: "$60 CAD",
-    img: floralPack12,
-  },
-  {
-    title: "Cupcake Bouquet",
-    price: "Starting at $50 CAD",
-    img: bouqet22Pack,
-  },
-  {
-    title: "6 Pack Classic Cupcakes",
-    price: "$20 CAD",
-    img: classicPack6,
-  },
-];
-
-/* Fake reviews */
-const reviews = [
-  {
-    name: "Sueda M.",
-    text: "The Cupcakes look so beautiful I almost didn’t want to eat them.",
-  },
-  {
-    name: "James K.",
-    text: "Ordered for a birthday — everyone loved them!",
-  },
-  {
-    name: "Emily R.",
-    text: "So cute and tasty. You can tell they’re made with love 🧁",
-  },
-];
 
 export default function Home({ darkMode }) {
   const [heroImg, setHeroImg] = useState(null);
+  const [heroLoading, setHeroLoading] = useState(true);
 
   /* Out Gallery section data */
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [galleryLoading, setGalleryLoading] = useState([true, true, true, true]);
+
+  const [packsLoading, setPacksLoading] = useState([true, true, true, true]);
+  const [flavoursLoading, setFlavoursLoading] = useState([true, true, true]);
 
   const isOpen = selectedIndex !== null;
 
@@ -85,8 +50,10 @@ export default function Home({ darkMode }) {
       const random =
         imageList[Math.floor(Math.random() * imageList.length)];
       setHeroImg(random);
+      setHeroLoading(false);
     }
   }, []);
+
 
   return (
     <div className={darkMode ? "bg-gray-900" : "bg-gray-50"}>
@@ -105,9 +72,20 @@ export default function Home({ darkMode }) {
             transition={{ duration: 1 }}
             className="absolute inset-0"
           >
-            <img src={heroImg} className="w-full h-full object-cover" />
+            <img 
+              src={heroImg} 
+              className="w-full h-full object-cover" 
+              onLoad={() => setHeroLoading(false)}
+              onError={() => setHeroLoading(false)}
+            />
             <div className="absolute inset-0 bg-pink-500/20" />
           </motion.div>
+        )}
+
+        {heroLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Loader type="cupcake" size="xl" />
+          </div>
         )}
 
         <div className="relative z-10">
@@ -121,20 +99,6 @@ export default function Home({ darkMode }) {
             Freshly baked cupcakes made with love, creativity, and happiness.
           </p>
 
-          <Link
-            to="/order"
-            onClick={() =>
-              trackEvent("cta_click_order", {
-                location: "hero_section",
-              })
-            }
-            className={`px-8 py-3 rounded-xl shadow-lg transition hover:scale-105 ${darkMode
-              ? "bg-pink-600 text-white hover:bg-pink-700"
-              : "bg-pink-500 text-white hover:bg-pink-600"
-              }`}
-          >
-            Pre Order Now
-          </Link>
         </div>
       </motion.section>
 
@@ -149,12 +113,34 @@ export default function Home({ darkMode }) {
               key={i}
               whileHover={{ scale: 1.05 }}
               onClick={() => setSelectedIndex(i)}
-              className={`rounded-2xl overflow-hidden shadow-md cursor-pointer ${darkMode
+              className={`rounded-2xl overflow-hidden shadow-md cursor-pointer relative ${darkMode
                 ? "bg-gray-800 border border-pink-700"
                 : "bg-white border border-[#F7B2C4]"
                 }`}
             >
-              <img src={img} className="h-64 w-full object-cover" />
+              {galleryLoading[i] && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                  <Loader type="image" size="large" />
+                </div>
+              )}
+              <img 
+                src={img} 
+                className="h-64 w-full object-cover" 
+                onLoad={() => {
+                  setGalleryLoading(prev => {
+                    const newLoading = [...prev];
+                    newLoading[i] = false;
+                    return newLoading;
+                  });
+                }}
+                onError={() => {
+                  setGalleryLoading(prev => {
+                    const newLoading = [...prev];
+                    newLoading[i] = false;
+                    return newLoading;
+                  });
+                }}
+              />
             </motion.div>
           ))}
         </div>
@@ -173,43 +159,6 @@ export default function Home({ darkMode }) {
 
       {/* ================= OUR CUPCAKES ================= */}
       <section className="px-4 sm:px-6 py-12">
-        <h2
-          className={`text-3xl font-bold text-center mb-10 ${darkMode ? "text-pink-400" : "text-pink-600"
-            }`}
-        >
-          Our packs & flavours
-        </h2>
-
-        <div className="grid md:grid-cols-2 gap-6 mb-10">
-          {cupcakePacks.map((pack, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className={`rounded-2xl overflow-hidden shadow-lg ${darkMode
-                ? "bg-gray-800 border border-pink-700 text-white"
-                : "bg-white border border-pink-200 text-gray-800"
-                }`}
-            >
-              <img
-                src={pack.img}
-                className="h-56 w-full object-cover"
-                alt={pack.title}
-              />
-              <div className="p-5 text-center">
-                <h4 className="text-xl font-bold mb-2">
-                  {pack.title}
-                </h4>
-                <p
-                  className={`text-lg font-semibold ${darkMode ? "text-pink-400" : "text-pink-500"
-                    }`}
-                >
-                  {pack.price}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
         {/* ===== FLAVOURS ===== */}
         <h3
           className={`text-xl font-semibold text-center mb-6 ${darkMode ? "text-gray-300" : "text-gray-700"
@@ -217,20 +166,38 @@ export default function Home({ darkMode }) {
         >
           Available Flavours
         </h3>
-
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">
           {/* Vanilla */}
           <motion.div
             whileHover={{ scale: 1.04 }}
-            className={`flex items-center gap-4 p-3 rounded-xl shadow ${darkMode
+            className={`flex items-center gap-4 p-3 rounded-xl shadow relative ${darkMode
               ? "bg-gray-800 border border-pink-700 text-white"
               : "bg-white border border-pink-200 text-gray-800"
               }`}
           >
+            {flavoursLoading[0] && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
+                <Loader type="image" size="small" />
+              </div>
+            )}
             <img
               src={vanilla}
               className="w-16 h-16 object-cover rounded-lg"
               alt="Vanilla Cupcake"
+              onLoad={() => {
+                setFlavoursLoading(prev => {
+                  const newLoading = [...prev];
+                  newLoading[0] = false;
+                  return newLoading;
+                });
+              }}
+              onError={() => {
+                setFlavoursLoading(prev => {
+                  const newLoading = [...prev];
+                  newLoading[0] = false;
+                  return newLoading;
+                });
+              }}
             />
             <h4 className="font-semibold">Vanilla</h4>
           </motion.div>
@@ -238,15 +205,34 @@ export default function Home({ darkMode }) {
           {/* Chocolate */}
           <motion.div
             whileHover={{ scale: 1.04 }}
-            className={`flex items-center gap-4 p-3 rounded-xl shadow ${darkMode
+            className={`flex items-center gap-4 p-3 rounded-xl shadow relative ${darkMode
               ? "bg-gray-800 border border-pink-700 text-white"
               : "bg-white border border-pink-200 text-gray-800"
               }`}
           >
+            {flavoursLoading[1] && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
+                <Loader type="image" size="small" />
+              </div>
+            )}
             <img
               src={chocolate}
               className="w-16 h-16 object-cover rounded-lg"
               alt="Chocolate Cupcake"
+              onLoad={() => {
+                setFlavoursLoading(prev => {
+                  const newLoading = [...prev];
+                  newLoading[1] = false;
+                  return newLoading;
+                });
+              }}
+              onError={() => {
+                setFlavoursLoading(prev => {
+                  const newLoading = [...prev];
+                  newLoading[1] = false;
+                  return newLoading;
+                });
+              }}
             />
             <h4 className="font-semibold">Chocolate</h4>
           </motion.div>
@@ -254,27 +240,54 @@ export default function Home({ darkMode }) {
           {/* Red Velvet */}
           <motion.div
             whileHover={{ scale: 1.04 }}
-            className={`flex items-center gap-4 p-3 rounded-xl shadow ${darkMode
+            className={`flex items-center gap-4 p-3 rounded-xl shadow relative ${darkMode
               ? "bg-gray-800 border border-pink-700 text-white"
               : "bg-white border border-pink-200 text-gray-800"
               }`}
           >
+            {flavoursLoading[2] && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100 rounded-xl">
+                <Loader type="image" size="small" />
+              </div>
+            )}
             <img
               src={redVelvet}
               className="w-16 h-16 object-cover rounded-lg"
               alt="Red Velvet Cupcake"
+              onLoad={() => {
+                setFlavoursLoading(prev => {
+                  const newLoading = [...prev];
+                  newLoading[2] = false;
+                  return newLoading;
+                });
+              }}
+              onError={() => {
+                setFlavoursLoading(prev => {
+                  const newLoading = [...prev];
+                  newLoading[2] = false;
+                  return newLoading;
+                });
+              }}
             />
             <div>
               <h4 className="font-semibold">Red Velvet</h4>
-              <p
-                className={`text-sm ${darkMode ? "text-pink-400" : "text-pink-500"
-                  }`}
-              >
-                +$2 CAD
-              </p>
             </div>
           </motion.div>
         </div>
+
+        {/* ===== PACK SIZES ===== */}
+        <h2
+          className={`text-3xl font-bold text-center mb-10 ${darkMode ? "text-pink-400" : "text-pink-600"
+            }`}
+        >
+          Our Products
+        </h2>
+
+        {/* PRODUCT GRID */}
+        <ProductGrid darkMode={darkMode} />
+
+
+
 
         {/* ===== PACK INFO ===== */}
         <div className="text-center mb-8">
@@ -282,22 +295,14 @@ export default function Home({ darkMode }) {
             className={`text-lg ${darkMode ? "text-gray-300" : "text-gray-700"
               }`}
           >
-            Available in packs of{" "}
-            <span className="font-semibold">4, 6, or 12</span> cupcakes
-          </p>
-          <p
-            className={`text-lg ${darkMode ? "text-gray-300" : "text-gray-700"
-              }`}
-          >
-            Mix and match flavours for additional {" "}
-            <span className="font-semibold">$5</span> CAD
+            Customise your order in cart page.
           </p>
         </div>
 
         {/* ===== PRIMARY CTA ===== */}
         <div className="text-center mb-12">
           <Link
-            to="/order"
+            to="/cart"
             onClick={() =>
               trackEvent("cta_click_order", {
                 location: "pack_infosection",

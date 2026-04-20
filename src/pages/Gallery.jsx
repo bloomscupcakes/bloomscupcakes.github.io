@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { trackEvent } from "../utils/analytics";
+import Loader from "../components/Loader";
 
 const images = import.meta.glob("../gallery/*.{jpg,jpeg,png}", {
   eager: true,
@@ -13,6 +14,7 @@ const Gallery = ({ darkMode }) => {
   const [index, setIndex] = useState(null);
   const [scale, setScale] = useState(1);
   const startX = useRef(0);
+  const [galleryLoading, setGalleryLoading] = useState(imageList.map(() => true));
 
   const isOpen = index !== null;
 
@@ -93,16 +95,35 @@ const Gallery = ({ darkMode }) => {
         {imageList.map((src, i) => (
           <div
             key={i}
-            className={`rounded-2xl overflow-hidden shadow-md cursor-pointer ${
+            className={`rounded-2xl overflow-hidden shadow-md cursor-pointer relative ${
               darkMode ? "bg-gray-800" : "bg-white"
             }`}
             onClick={() => setIndex(i)}
           >
+            {galleryLoading[i] && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                <Loader type="image" size="large" />
+              </div>
+            )}
             <img
               src={src}
               alt={`gallery-${i}`}
               loading="lazy"
               className="w-full h-64 object-cover hover:scale-105 transition"
+              onLoad={() => {
+                setGalleryLoading(prev => {
+                  const newLoading = [...prev];
+                  newLoading[i] = false;
+                  return newLoading;
+                });
+              }}
+              onError={() => {
+                setGalleryLoading(prev => {
+                  const newLoading = [...prev];
+                  newLoading[i] = false;
+                  return newLoading;
+                });
+              }}
             />
           </div>
         ))}
@@ -162,7 +183,7 @@ const Gallery = ({ darkMode }) => {
       <div className="flex justify-center py-10">
 
         <Link
-          to="/order"
+          to="/cart"
           onClick={() =>
             trackEvent("cta_click_order", {
               location: "hero_section",

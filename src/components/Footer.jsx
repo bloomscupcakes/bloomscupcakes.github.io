@@ -1,18 +1,38 @@
 import { Link } from "react-router-dom";
 import { FaPhoneAlt, FaInstagram } from "react-icons/fa";
 import { SiGmail } from "react-icons/si";
+import { motion } from "framer-motion";
 
 
 export default function Footer({ darkMode }) {
   return (
-    <footer className={`border-t mt-16 transition ${
+    <motion.footer
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      viewport={{ once: true }}
+      className={`border-t mt-16 transition ${
       darkMode ? "bg-gray-900 border-gray-700" : "bg-white"
     }`}>
       <div className="max-w-6xl mx-auto px-4 py-10">
-        <div className="grid md:grid-cols-3 gap-8">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={{
+            hidden: {},
+            show: { transition: { staggerChildren: 0.1 } },
+          }}
+          className="grid md:grid-cols-3 gap-8"
+        >
 
           {/* Brand */}
-          <div>
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { opacity: 1, y: 0 },
+            }}
+          >
             <h2 className={`text-xl font-bold ${
               darkMode ? "text-pink-400" : "text-pink-500"
             }`}>
@@ -31,10 +51,15 @@ export default function Footer({ darkMode }) {
                 darkMode ? "hover:text-pink-400" : "hover:text-pink-500"
               }`}>Terms & Conditions</Link>
             </div>
-          </div>
+          </motion.div>
 
           {/* Links */}
-          <div>
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { opacity: 1, y: 0 },
+            }}
+          >
             <h3 className={`font-semibold mb-3 ${
               darkMode ? "text-gray-200" : "text-gray-800"
             }`}>Quick Links</h3>
@@ -44,7 +69,7 @@ export default function Footer({ darkMode }) {
               <li><Link to="/" className={`transition ${
                 darkMode ? "hover:text-pink-400" : "hover:text-pink-500"
               }`}>Home</Link></li>
-              <li><Link to="/order" className={`transition ${
+              <li><Link to="/cart" className={`transition ${
                 darkMode ? "hover:text-pink-400" : "hover:text-pink-500"
               }`}>Order</Link></li>
               <li><Link to="/contact" className={`transition ${
@@ -54,10 +79,15 @@ export default function Footer({ darkMode }) {
                 darkMode ? "hover:text-pink-400" : "hover:text-pink-500"
               }`}>Allergen Info</Link></li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* Contact */}
-          <div>
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { opacity: 1, y: 0 },
+            }}
+          >
                       <h3 className={`font-semibold mb-3 ${
                         darkMode ? "text-gray-200" : "text-gray-800"
                       }`}>Contact</h3>
@@ -97,9 +127,9 @@ export default function Footer({ darkMode }) {
                           <FaPhoneAlt size={16} />
                           (343) 987-9593
                       </a>          
-          </div>
+          </motion.div>
 
-        </div>
+        </motion.div>
 
         <div className={`text-center mt-10 text-sm ${
           darkMode ? "text-gray-500" : "text-gray-400"
@@ -107,6 +137,6 @@ export default function Footer({ darkMode }) {
           © {new Date().getFullYear()} Blooms Cupcakes. All rights reserved.
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

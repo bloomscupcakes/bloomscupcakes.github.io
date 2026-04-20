@@ -5,29 +5,43 @@ const MotionLink = motion(Link);
 
 export default function AllergenInfo({ darkMode }) {
   return (
-    <div className={`min-h-screen p-6 ${
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className={`min-h-screen p-6 ${
       darkMode ? "bg-gray-900" : "bg-gray-50"
-    }`}>
+    }`}
+    >
       <div className="max-w-3xl mx-auto space-y-8">
 
         {/* =========================
             HERO
         ========================== */}
-        <section className="text-center space-y-2">
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center space-y-2"
+        >
           <h1 className={`text-3xl font-bold ${
             darkMode ? "text-pink-400" : "text-black"
           }`}>Allergen Information</h1>
           <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
             Clear ingredient transparency for every cupcake we make.
           </p>
-        </section>
+        </motion.section>
 
         {/* =========================
             ALLERGEN TABLE
         ========================== */}
-        <section className={`rounded-2xl shadow p-6 ${
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2 }}
+          className={`rounded-2xl shadow p-6 ${
           darkMode ? "bg-gray-800" : "bg-white"
-        }`}>
+        }`}
+        >
           <h2 className={`text-xl font-semibold mb-4 ${
             darkMode ? "text-gray-100" : "text-black"
           }`}>
@@ -71,14 +85,20 @@ export default function AllergenInfo({ darkMode }) {
               </tbody>
             </table>
           </div>
-        </section>
+        </motion.section>
 
         {/* =========================
             INGREDIENT NOTES
         ========================== */}
-        <section className={`rounded-2xl shadow p-6 space-y-3 ${
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className={`rounded-2xl shadow p-6 space-y-3 ${
           darkMode ? "bg-gray-800" : "bg-white"
-        }`}>
+        }`}
+        >
           <h2 className={`text-xl font-semibold ${
             darkMode ? "text-gray-100" : "text-black"
           }`}>
@@ -96,16 +116,22 @@ export default function AllergenInfo({ darkMode }) {
           <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
             • Floral designs use edible sugar decorations and dairy-based frosting.
           </p>
-        </section>
+        </motion.section>
 
         {/* =========================
             CROSS CONTAMINATION
         ========================== */}
-        <section className={`border rounded-2xl p-6 ${
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className={`border rounded-2xl p-6 ${
           darkMode
             ? "bg-gray-800 border-yellow-700"
             : "bg-yellow-50 border-yellow-200"
-        }`}>
+        }`}
+        >
           <h2 className={`text-xl font-semibold ${
             darkMode ? "text-yellow-400" : "text-yellow-800"
           }`}>
@@ -118,12 +144,18 @@ export default function AllergenInfo({ darkMode }) {
             All products are prepared in a shared kitchen environment where
             trace amounts of nuts, dairy, wheat, and soy may be present.
           </p>
-        </section>
+        </motion.section>
 
         {/* =========================
             CONTACT CTA
         ========================== */}
-        <section className="text-center space-y-4">
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="text-center space-y-4"
+        >
           <h2 className={`text-xl font-semibold ${
             darkMode ? "text-gray-100" : "text-black"
           }`}>
@@ -147,9 +179,9 @@ export default function AllergenInfo({ darkMode }) {
           >
             Contact Us
           </MotionLink>
-        </section>
+        </motion.section>
 
       </div>
-    </div>
+    </motion.div>
   );
 }

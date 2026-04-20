@@ -1,108 +1,110 @@
 import { motion } from "framer-motion";
 import { FaPhoneAlt, FaInstagram } from "react-icons/fa";
 import { SiGmail } from "react-icons/si";
-import { useEffect } from "react";
+import { contactInfo } from "../utils/config";
+
+const iconMap = {
+  instagram: <FaInstagram size={18} />,
+  email: <SiGmail size={18} />,
+  phone: <FaPhoneAlt size={16} />,
+};
 
 export default function Contact({ darkMode }) {
-  
   return (
-    <div className={`px-6 py-8 ${
-      darkMode ? "bg-gray-900 min-h-screen" : "bg-gray-50"
-    }`}>
-
+    <div
+      className={`min-h-screen px-4 sm:px-6 lg:px-8 py-12 ${
+        darkMode ? "bg-gray-900 text-gray-100" : "bg-[#FFF7F9] text-[#2B2B2B]"
+      }`}
+    >
+      {/* HEADER */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`w-full max-w-lg rounded-2xl shadow-lg p-8 space-y-8 ${
-          darkMode ? "bg-gray-800" : "bg-white"
-        }`}
+        className="text-center max-w-2xl mx-auto mb-10"
       >
-
-        {/* HEADER */}
-        <div className="text-center space-y-2">
-          <h1 className={`text-3xl font-bold ${
+        <h1
+          className={`text-4xl sm:text-5xl font-bold mb-3 ${
             darkMode ? "text-pink-400" : "text-pink-500"
-          }`}>
-            Contact Us
-          </h1>
-          <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
-            Questions or custom cupcake requests? We’d love to hear from you 🧁
-          </p>
-        </div>
+          }`}
+        >
+          Contact Us 🧁
+        </h1>
 
-        {/* CONTACT ITEMS */}
-        <div className="space-y-4">
+        <p className={darkMode ? "text-gray-400" : "text-gray-600"}>
+          Questions, custom orders, or events — we’re happy to help.
+        </p>
 
-          {/* INSTAGRAM */}
-          <a
-            href="https://www.instagram.com/bloomscupcakes.ca"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center gap-4 p-4 rounded-xl border transition hover:shadow-md hover:-translate-y-0.5 ${
+        <p className="mt-3 text-sm text-red-500">
+          Orders require at least 3 days notice
+        </p>
+      </motion.div>
+
+      {/* GRID */}
+      <motion.div
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.12 } },
+        }}
+        className="grid md:grid-cols-3 gap-5 max-w-5xl mx-auto"
+      >
+        {contactInfo.map((item, i) => (
+          <motion.a
+            key={i}
+            href={item.link}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              show: { opacity: 1, y: 0 },
+            }}
+            whileHover={{ scale: 1.03 }}
+            className={`rounded-2xl p-5 border shadow-sm transition flex flex-col gap-3 ${
               darkMode
-                ? "bg-gray-700 border-pink-700 text-gray-100"
-                : "bg-white border-gray-200"
+                ? "bg-gray-800 border-pink-700"
+                : "bg-white border-pink-100"
             }`}
           >
-            <div className={`p-3 rounded-full ${
-              darkMode ? "bg-pink-900 text-pink-400" : "bg-pink-50 text-pink-500"
-            }`}>
-              <FaInstagram size={18} />
+            {/* ICON */}
+            <div
+              className={`w-10 h-10 flex items-center justify-center rounded-full ${
+                darkMode
+                  ? "bg-pink-900 text-pink-400"
+                  : "bg-pink-50 text-pink-500"
+              }`}
+            >
+              {iconMap[item.type]}
             </div>
 
-            <div>
-              <div className={`font-medium ${darkMode ? "text-gray-100" : "text-gray-800"}`}>Instagram</div>
-              <div className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>@bloomscupcakes.ca</div>
-            </div>
-          </a>
+            {/* TEXT */}
+            <div className="min-w-0">
+              <div
+                className={`font-semibold ${
+                  darkMode ? "text-white" : "text-gray-800"
+                }`}
+              >
+                {item.title}
+              </div>
 
-          {/* EMAIL */}
-          <a
-            href="mailto:bloomscupcakes@gmail.com"
-            className={`flex items-center gap-4 p-4 rounded-xl border transition hover:shadow-md hover:-translate-y-0.5 ${
-              darkMode
-                ? "bg-gray-700 border-pink-700 text-gray-100"
-                : "bg-white border-gray-200"
-            }`}
-          >
-            <div className={`p-3 rounded-full ${
-              darkMode ? "bg-pink-900 text-pink-400" : "bg-pink-50 text-pink-500"
-            }`}>
-              <SiGmail size={18} />
-            </div>
-
-            <div>
-              <div className={`font-medium ${darkMode ? "text-gray-100" : "text-gray-800"}`}>Email</div>
-              <div className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                bloomscupcakes@gmail.com
+              <div className="text-sm break-words text-gray-500">
+                {item.value}
               </div>
             </div>
-          </a>
+          </motion.a>
+        ))}
+      </motion.div>
 
-          {/* PHONE */}
-          <a
-            href="tel:3439879593"
-            className={`flex items-center gap-4 p-4 rounded-xl border transition hover:shadow-md hover:-translate-y-0.5 ${
-              darkMode
-                ? "bg-gray-700 border-pink-700 text-gray-100"
-                : "bg-white border-gray-200"
-            }`}
-          >
-            <div className={`p-3 rounded-full ${
-              darkMode ? "bg-pink-900 text-pink-400" : "bg-pink-50 text-pink-500"
-            }`}>
-              <FaPhoneAlt size={16} />
-            </div>
-
-            <div>
-              <div className={`font-medium ${darkMode ? "text-gray-100" : "text-gray-800"}`}>Phone</div>
-              <div className={`text-sm ${darkMode ? "text-gray-400" : "text-gray-500"}`}>
-                (343) 987-9593
-              </div>
-            </div>
-          </a>
-
-        </div>
+      {/* FOOT NOTE */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        className="text-center mt-14 max-w-xl mx-auto"
+      >
+        <p className="text-sm text-gray-500 leading-relaxed">
+          Please include your preferred date, cupcake quantity, flavours, and
+          any custom design ideas when contacting us.
+        </p>
       </motion.div>
     </div>
   );
