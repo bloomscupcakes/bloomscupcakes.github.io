@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import app, { db } from "../firebase";
 import { collection, getDocs, query, orderBy, startAfter, endBefore, limit, updateDoc, doc } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithRedirect, signOut } from "firebase/auth";
 import Loader from "../components/Loader";
 
 const PAGE_SIZE = 5;
@@ -67,10 +67,10 @@ export default function ShowOrders({ darkMode }) {
 
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      await signInWithRedirect(auth, provider);
     } catch (error) {
       console.error("Google sign-in failed:", error);
-      setErrorMessage("Google sign-in failed. Please allow popups and try again.");
+      setErrorMessage("Google sign-in failed. Please try again.");
     } finally {
       setAuthLoading(false);
     }
