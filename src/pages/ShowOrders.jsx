@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import app, { db } from "../firebase";
 import { collection, getDocs, query, orderBy, startAfter, endBefore, limit, updateDoc, doc } from "firebase/firestore";
-import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithRedirect, signOut } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from "firebase/auth";
 import Loader from "../components/Loader";
 
 const PAGE_SIZE = 5;
@@ -67,7 +67,7 @@ export default function ShowOrders({ darkMode }) {
 
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithRedirect(auth, provider);
+      await signInWithPopup(auth, provider);
     } catch (error) {
       console.error("Google sign-in failed:", error);
       setErrorMessage("Google sign-in failed. Please try again.");
@@ -282,63 +282,73 @@ export default function ShowOrders({ darkMode }) {
           </div>
         ) : (
           <div className="space-y-6">
-            {orders.map((order) => (
-              <motion.div
-                key={order.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`p-6 rounded-2xl shadow-lg border-2 ${darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-pink-100"}`}
-              >
-                <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-start mb-4">
-                  <div>
-                    <h2 className="text-xl font-bold text-pink-500">{order.customer.name}</h2>
-                    <p className="text-sm opacity-70">{order.customer.email} | {order.customer.phone}</p>
-                    <p className="text-sm opacity-70">Pickup: {order.order.pickupDate}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-pink-600">${order.order.total}</p>
-                    <select
-                      value={order.status}
-                      onChange={(e) => updateOrderStatus(order.id, e.target.value)}
-                      className={`mt-3 px-3 py-1 rounded-full text-sm font-bold border-2 ${
-                        order.status === "new" ? "bg-yellow-100 text-yellow-800 border-yellow-300" :
-                        order.status === "completed" ? "bg-green-100 text-green-800 border-green-300" :
-                        order.status === "delivered" ? "bg-blue-100 text-blue-800 border-blue-300" :
-                        "bg-red-100 text-red-800 border-red-300"
-                      }`}
-                    >
-                      {statusOptions.map((status) => (
-                        <option key={status} value={status}>
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
+            {orders.map((order) => {
+              const customer = order.customer || {};
+              const orderData = order.order || {};
+              const selectedStatus = statusOptions.includes(order.status) ? order.status : "new";
 
-                <div className="mb-4">
-                  <h3 className="font-bold mb-2">Items:</h3>
-                  <ul className="space-y-1">
-                    {order.order.items.map((item, index) => (
-                      <li key={index} className="text-sm">
-                        {item.quantity}x {item.productTitle} ({item.packSize}, {item.flavour}) - ${item.pricePerUnit} each
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              return (
+                <motion.div
+                  key={order.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-6 rounded-2xl shadow-lg border-2 ${darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-pink-100"}`}
+                >
+                  <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-start mb-4">
+                    <div>
+                      <h2 className="text-xl font-bold text-pink-500">{customer.name || "Customer"}</h2>
+                      <p className="text-sm opacity-70">{customer.email || "no-email@unknown"} | {customer.phone || "no phone"}</p>
+                      <p className="text-sm opacity-70">Pickup: {orderData.pickupDate || "TBD"}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-pink-600">${orderData.total || "0.00"}</p>
+                      <select
+                        value={selectedStatus}
+                        onChange={(e) => updateOrderStatus(order.id, e.target.value)}
+                        className={`mt-3 px-3 py-1 rounded-full text-sm font-bold border-2 ${
+                          selectedStatus === "new" ? "bg-yellow-100 text-yellow-800 border-yellow-300" :
+                          selectedStatus === "completed" ? "bg-green-100 text-green-800 border-green-300" :
+                          selectedStatus === "delivered" ? "bg-blue-100 text-blue-800 border-blue-300" :
+                          "bg-red-100 text-red-800 border-red-300"
+                        }`}
+                      >
+                        {statusOptions.map((status) => (
+                          <option key={status} value={status}>
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
 
-                {order.order.notes && (
                   <div className="mb-4">
-                    <h3 className="font-bold mb-2">Notes:</h3>
-                    <p className="text-sm italic">{order.order.notes}</p>
+                    <h3 className="font-bold mb-2">Items:</h3>
+                    {orderData.items?.length ? (
+                      <ul className="space-y-1">
+                        {orderData.items.map((item, index) => (
+                          <li key={index} className="text-sm">
+                            {item.quantity || 0}x {item.productTitle || "Item"} ({item.packSize || "N/A"}, {item.flavour || "N/A"}) - ${item.pricePerUnit || item.priceAtPurchase || "0.00"} each
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm opacity-70">No order items available.</p>
+                    )}
                   </div>
-                )}
 
-                <div className="text-xs opacity-50">
-                  Order ID: {order.id} | Created: {order.createdAt?.toDate?.()?.toLocaleString() || "N/A"}
-                </div>
-              </motion.div>
-            ))}
+                  {orderData.notes && (
+                    <div className="mb-4">
+                      <h3 className="font-bold mb-2">Notes:</h3>
+                      <p className="text-sm italic">{orderData.notes}</p>
+                    </div>
+                  )}
+
+                  <div className="text-xs opacity-50">
+                    Order ID: {order.id} | Created: {order.createdAt?.toDate?.()?.toLocaleString() || "N/A"}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
