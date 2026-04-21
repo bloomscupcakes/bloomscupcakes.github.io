@@ -167,7 +167,7 @@ export default function ShowOrders({ darkMode }) {
                           <p className="font-black leading-none">{item.quantity}x {item.productTitle}</p>
                           <p className="text-[10px] font-bold opacity-40 uppercase mt-1">{item.packSize} • {item.flavour}</p>
                         </div>
-                        <p className="font-black text-pink-500">${(item.quantity * item.priceAtPurchase).toFixed(2)}</p>
+                        <p className="font-black text-pink-500">${item.quantity * item.pricePerUnit}</p>
                       </div>
                     ))}
                   </div>
