@@ -86,7 +86,7 @@ export default function App() {
           )}
         </AnimatePresence>
 
-        <main className="max-w-6xl mx-auto px-4 py-6">
+        <main className="max-w-6xl mx-auto py-6">
           <AnimatePresence mode="wait">
             <Suspense fallback={<div className="flex min-h-[50vh] items-center justify-center"><Loader type="cupcake" size="lg" /></div>}>
               <Routes location={location} key={location.pathname}>
