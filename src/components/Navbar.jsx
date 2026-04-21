@@ -51,7 +51,16 @@ export default function Navbar({ darkMode, toggleDarkMode }) {
                 darkMode ? "text-pink-400" : "text-pink-500"
               }`}
             >
-            <span className={darkMode ? "text-white" : "text-gray-900"}>BLOOMS CUPCAKES</span>
+            {/* <span className={darkMode ? "text-white" : "text-gray-900"}>BLOOMS CUPCAKES</span> */}
+<div className="flex items-center">
+  <img 
+    src="/logo.svg" 
+    alt="Blooms Cupcakes Logo" 
+    /* Use h-12 for mobile and h-16 for larger screens. 
+       Adjust these values to fit your layout perfectly */
+    className="h-12 w-auto sm:h-16 object-contain" 
+  />
+</div>
             </Link>
           </div>
 

@@ -131,7 +131,7 @@ export default function Cart({ darkMode }) {
         </button>
       </div>
 
-      <section className="px-4 sm:px-6 py-8">
+      <section className="px-4 sm:px-6">
         <h2 className={`text-3xl font-bold text-center mb-6 ${darkMode ? "text-pink-400" : "text-pink-600"}`}>Add More Items</h2>
         <ProductGrid darkMode={darkMode} />
       </section>

@@ -178,9 +178,15 @@ export default function ShowOrders({ darkMode }) {
                       <span>${order.order?.subtotal}</span>
                     </div>
                     {parseFloat(order.order?.surcharge) > 0 && (
-                      <div className="flex justify-between text-[10px] font-bold text-pink-400 uppercase">
+                      <div className="flex justify-between text-[10px] font-bold opacity-50 uppercase">
                         <span>Multi-Flavour Surcharge</span>
-                        <span>+${order.order?.surcharge}</span>
+                        <span>${order.order?.surcharge}</span>
+                      </div>
+                    )}
+                    {parseFloat(order.fulfillment?.deliveryFee) > 0 && (
+                      <div className="flex justify-between text-[10px] font-bold opacity-50 uppercase">
+                        <span>Delivery Fee</span>
+                        <span>${order.fulfillment?.deliveryFee}</span>
                       </div>
                     )}
                     <div className="flex justify-between text-[10px] font-bold opacity-50 uppercase">
