@@ -17,7 +17,7 @@ export default function Cart({ darkMode }) {
   const [fulfillmentMethod, setFulfillmentMethod] = useState("pickup"); // 'pickup' or 'delivery'
   const navigate = useNavigate();
 
-  const DELIVERY_CHARGE = 15.00;
+  const DELIVERY_CHARGE = 10.00;
 
   const getMinDate = () => {
     const today = new Date();
@@ -34,12 +34,10 @@ export default function Cart({ darkMode }) {
 
   // --- PRICING LOGIC ---
   const uniqueFlavours = [...new Set(cart.map((item) => item.selectedFlavour))];
-  const isMultiFlavour = uniqueFlavours.length > 1;
-  const multiFlavourCharge = isMultiFlavour ? 5 : 0;
   const currentDeliveryFee = fulfillmentMethod === "delivery" ? DELIVERY_CHARGE : 0;
 
   const itemsSubtotal = cart.reduce((sum, item) => sum + calculateItemPrice(item) * item.quantity, 0);
-  const totalSubtotal = itemsSubtotal + multiFlavourCharge + currentDeliveryFee;
+  const totalSubtotal = itemsSubtotal + currentDeliveryFee;
   const tax = totalSubtotal * 0.13;
   const grandTotal = totalSubtotal + tax;
 
@@ -88,9 +86,7 @@ export default function Cart({ darkMode }) {
         },
         order: {
           items: orderItems,
-          isMultiFlavour,
           subtotal: itemsSubtotal.toFixed(2),
-          surcharge: multiFlavourCharge.toFixed(2),
           tax: tax.toFixed(2),
           total: grandTotal.toFixed(2),
           pickupDate: formData.get("pickup_date"),
@@ -192,12 +188,6 @@ export default function Cart({ darkMode }) {
                   <span className="opacity-60">Subtotal</span>
                   <span className="font-bold">${itemsSubtotal.toFixed(2)}</span>
                 </div>
-                {isMultiFlavour && (
-                  <div className="flex justify-between text-sm">
-                    <span className="font-bold text-pink-500 italic">Multi-Flavour Surcharge 🌸</span>
-                    <span className="font-bold text-pink-500">+$5.00</span>
-                  </div>
-                )}
                 {fulfillmentMethod === "delivery" && (
                   <div className="flex justify-between text-sm">
                     <span className="opacity-60 font-bold">Delivery Fee 🚚</span>
