@@ -1,5 +1,5 @@
 // components/ProductGrid.js
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { useCart } from "../contexts/CartContext";
 import { PRODUCTS, FLAVOURS } from "../utils/config";
 import { motion } from "framer-motion";
@@ -9,6 +9,15 @@ export default function ProductGrid({ darkMode }) {
   const [selectedPack, setSelectedPack] = useState({}); // Stores selected size per product
   const [selectedFlavour, setSelectedFlavour] = useState({}); // Stores selected flavour per product
   const [toast, setToast] = useState(null);
+
+  useEffect(() => {
+    // Create an initial state object
+    const initialPacks = {};
+    PRODUCTS.forEach((product) => {
+      initialPacks[product.id] = product.packSizes[0];
+    });
+    setSelectedPack(initialPacks);
+  }, []); // Runs once on mount
 
   const handleAddToCart = (product) => {
     const sizeInfo = selectedPack[product.id] || product.packSizes[0];
@@ -44,7 +53,7 @@ export default function ProductGrid({ darkMode }) {
             whileHover={{ y: -5, scale: 1.02 }}
             className={`rounded-3xl overflow-hidden shadow-lg border ${darkMode ? "bg-gray-800 border-gray-700" : "bg-white border-pink-100"}`}
           >
-            <img src={product.packSizes[0].img} alt={product.title} className="w-full h-64 object-cover" />
+            <img src={selectedPack[product.id]?.img} alt={product.title} className="w-full h-64 object-cover" />
             
             <div className="p-6">
               <h3 className={`text-xl font-black mb-2 ${darkMode ? "text-white" : "text-gray-900"}`}>{product.title}</h3>
