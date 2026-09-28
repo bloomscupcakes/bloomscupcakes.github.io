@@ -1,1 +1,0 @@
-import{n as e}from"./config-B0NaP3LB.js";var t=(t,n={},r=!1)=>{if(window.gtag){let i={...n};r&&(i.send_to=e.ADS_ID),window.gtag(`event`,t,i)}};export{t};
