@@ -309,16 +309,21 @@ export default function Cart({ darkMode }) {
       };
 
       console.log("Saving order to Firebase:", finalOrder);
-      const orderName = formData.get("name") || "customer";
-      const documentId = generateDocumentId(orderName);
-      const docRef = doc(db, "orders", documentId);
-      
-      try {
-        await setDoc(docRef, finalOrder);
-        console.log("Order saved successfully with ID:", documentId);
-      } catch (firebaseError) {
-        console.error("Firebase save failed:", firebaseError);
-        console.warn("Proceeding despite Firebase error - user will see submitted page");
+
+      if (db) {
+        const orderName = formData.get("name") || "customer";
+        const documentId = generateDocumentId(orderName);
+        const docRef = doc(db, "orders", documentId);
+
+        try {
+          await setDoc(docRef, finalOrder);
+          console.log("Order saved successfully with ID:", documentId);
+        } catch (firebaseError) {
+          console.error("Firebase save failed:", firebaseError);
+          console.warn("Proceeding despite Firebase error - user will see submitted page");
+        }
+      } else {
+        console.warn("Firebase is not configured. Skipping order save for this deployment.");
       }
 
       // --- SEND DISCORD NOTIFICATION ---

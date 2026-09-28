@@ -22,10 +22,19 @@ export default function AdminPage({ darkMode }) {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isBusy, setIsBusy] = useState(false);
 
-  const auth = getAuth(app);
+  const auth = app ? getAuth(app) : null;
   const statusOptions = ["new", "completed", "delivered", "refunded"];
 
   useEffect(() => {
+    if (!auth) {
+      setUser(null);
+      setAuthLoading(false);
+      setOrders([]);
+      setIsAuthorized(true);
+      setLoading(false);
+      return undefined;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setAuthLoading(false);
@@ -38,10 +47,15 @@ export default function AdminPage({ darkMode }) {
   }, [auth]);
 
   useEffect(() => {
-    if (user) fetchOrders();
+    if (user && db) fetchOrders();
   }, [user]);
 
   const fetchOrders = async (cursor = null) => {
+    if (!db) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     try {
       const q = cursor 
