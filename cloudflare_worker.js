@@ -18,17 +18,33 @@ export default {
     }
 
     try {
-      const payload = await request.json();
+      const contentType = request.headers.get("content-type") || "";
+      let payload = {};
+      const uploadedFiles = [];
+
+      if (contentType.includes("multipart/form-data")) {
+        const formData = await request.formData();
+        const rawPayload = formData.get("payload") || formData.get("data") || "{}";
+        payload = typeof rawPayload === "string" ? JSON.parse(rawPayload) : rawPayload;
+
+        const files = formData.getAll("files");
+        for (const file of files) {
+          if (file && typeof file !== "string") {
+            uploadedFiles.push(file);
+          }
+        }
+      } else {
+        payload = await request.json();
+      }
+
       const { customer, fulfillment, order } = payload;
 
       const customerEmail = customer?.email || "";
-      
-      // 1. Create a encoded mailto link with pre-filled subject line
+
       const subject = encodeURIComponent(`Blooms Cupcakes Order Update - ${customer?.name || "Customer"}`);
       const mailtoUrl = `mailto:${customerEmail}?subject=${subject}`;
 
-      // 2. Format customer field with clickable Discord markdown links
-      const customerField = 
+      const customerField =
         `**Name:** ${customer?.name || "N/A"}\n` +
         `**Email:** [${customerEmail}](${mailtoUrl}) ✉️ *(Click to Email)*\n` +
         `**Phone:** ${customer?.phone ? `[${customer.phone}](tel:${customer.phone})` : "N/A"}\n` +
@@ -85,16 +101,23 @@ export default {
         });
       }
 
-      // Send to Discord
       if (env.DISCORD_WEBHOOK_URL) {
+        const discordForm = new FormData();
+        discordForm.append("payload_json", JSON.stringify(discordPayload));
+
+        uploadedFiles.forEach((file, index) => {
+          const fileName = file.name || `uploaded-image-${index + 1}.png`;
+          discordForm.append(`files[${index}]`, file, fileName);
+        });
+
         const response = await fetch(env.DISCORD_WEBHOOK_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(discordPayload),
+          body: discordForm,
         });
 
         if (!response.ok) {
-          throw new Error("Discord API call failed");
+          const text = await response.text();
+          throw new Error(`Discord API call failed: ${text || response.statusText}`);
         }
       }
 
@@ -109,4 +132,4 @@ export default {
       });
     }
   },
-};  
+};

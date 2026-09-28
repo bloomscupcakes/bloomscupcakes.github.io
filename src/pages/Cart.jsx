@@ -17,7 +17,66 @@ export default function Cart({ darkMode }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fulfillmentMethod, setFulfillmentMethod] = useState("pickup"); // 'pickup' or 'delivery'
   const [showAddModal, setShowAddModal] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
+  const [uploadError, setUploadError] = useState("");
+  const [formFeedback, setFormFeedback] = useState({ type: "", message: "" });
   const navigate = useNavigate();
+
+  const MAX_IMAGE_COUNT = 3;
+  const MAX_IMAGE_PIXELS = 20_000_000;
+  const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
+  const MOBILE_IMAGE_TYPES = ["image/heic", "image/heif", "image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+  const normalizeImageFile = async (file) => {
+    const fileType = (file?.type || "").toLowerCase();
+
+    if (fileType === "image/heic" || fileType === "image/heif") {
+      const canvas = document.createElement("canvas");
+      const image = new Image();
+
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Could not read HEIC image file."));
+        reader.readAsDataURL(file);
+      });
+
+      const result = await new Promise((resolve, reject) => {
+        image.onload = () => {
+          const maxWidth = 2000;
+          const scale = Math.min(1, maxWidth / image.width);
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
+
+          const context = canvas.getContext("2d");
+          context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error("Could not convert HEIC image to JPG."));
+                return;
+              }
+              resolve(new File([blob], `${(file.name || "photo").replace(/\.[^.]+$/, "") || "photo"}.jpg`, {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              }));
+            },
+            "image/jpeg",
+            0.9
+          );
+        };
+
+        image.onerror = () => reject(new Error("Could not load HEIC image file."));
+        image.src = dataUrl;
+      });
+
+      return result;
+    }
+
+    return file;
+  };
 
   const DELIVERY_CHARGE = 10.00;
 
@@ -244,6 +303,89 @@ export default function Cart({ darkMode }) {
     return `${dateStr}_${sanitizedName}_${uniqueNum}`;
   };
 
+  useEffect(() => {
+    const urls = uploadedFiles.map((file) => URL.createObjectURL(file));
+    setPreviewUrls(urls);
+
+    return () => {
+      urls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [uploadedFiles]);
+
+  const removeSelectedImage = (indexToRemove) => {
+    setUploadedFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleImageSelection = async (event) => {
+    const files = Array.from(event.target.files || []);
+    const existingFiles = uploadedFiles;
+    const combinedFiles = [...existingFiles, ...files];
+    const selectedFiles = combinedFiles.slice(0, MAX_IMAGE_COUNT);
+
+    const validFiles = [];
+    let nextError = "";
+
+    for (const file of selectedFiles) {
+      const fileType = (file?.type || "").toLowerCase();
+      const isSupportedMobileType = MOBILE_IMAGE_TYPES.includes(fileType);
+
+      if (!file || !fileType.startsWith("image/")) {
+        nextError = "Only image files can be uploaded.";
+        continue;
+      }
+
+      if (!isSupportedMobileType && !fileType.startsWith("image/")) {
+        nextError = "This browser may not support that type of image file. Please try JPG, PNG, or WEBP.";
+        continue;
+      }
+
+      let normalizedFile = file;
+      try {
+        normalizedFile = await normalizeImageFile(file);
+      } catch (error) {
+        nextError = error.message || "This image could not be processed. Please try another photo.";
+        continue;
+      }
+
+      if (normalizedFile.size > MAX_IMAGE_BYTES) {
+        nextError = "Please choose images smaller than 10MB each.";
+        continue;
+      }
+
+      const isWithinPixelLimit = await new Promise((resolve) => {
+        const url = URL.createObjectURL(normalizedFile);
+        const img = new Image();
+
+        img.onload = () => {
+          URL.revokeObjectURL(url);
+          resolve(img.naturalWidth * img.naturalHeight <= MAX_IMAGE_PIXELS);
+        };
+
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          resolve(false);
+        };
+
+        img.src = url;
+      });
+
+      if (!isWithinPixelLimit) {
+        nextError = "Please choose images at or under 20MP resolution.";
+        continue;
+      }
+
+      validFiles.push(normalizedFile);
+    }
+
+    if (combinedFiles.length > MAX_IMAGE_COUNT) {
+      nextError = `You can upload up to ${MAX_IMAGE_COUNT} images.`;
+    }
+
+    setUploadError(nextError);
+    setUploadedFiles(validFiles);
+    event.target.value = "";
+  };
+
   const handleOrderSubmission = async (e) => {
     e.preventDefault();
     if (cart.length === 0) return;
@@ -331,17 +473,36 @@ export default function Cart({ darkMode }) {
       const WORKER_URL = "https://discord.bloomscupcakes.workers.dev";
 
       try {
-        await fetch(WORKER_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(finalOrder),
+        const workerFormData = new FormData();
+        workerFormData.append("payload", JSON.stringify(finalOrder));
+
+        uploadedFiles.forEach((file) => {
+          workerFormData.append("files", file);
         });
+
+        const response = await fetch(WORKER_URL, {
+          method: "POST",
+          body: workerFormData,
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || "The order could not be sent to Discord.");
+        }
+
         console.log("Discord notification proxy call successful!");
       } catch (discordErr) {
+        const message = discordErr?.message || "The order could not be sent to Discord.";
         console.error("Failed to trigger Discord webhook proxy:", discordErr);
+        setFormFeedback({ type: "error", message: `Your order was saved locally, but the message could not be sent: ${message}` });
+        setIsSubmitting(false);
+        return;
       }
 
       clearCart();
+      setUploadedFiles([]);
+      setUploadError("");
+      setFormFeedback({ type: "success", message: "Your order has been submitted successfully." });
       e.target.reset();
       
       console.log("Before navigate, isSubmitting:", isSubmitting);
@@ -354,9 +515,9 @@ export default function Cart({ darkMode }) {
       }, 100);
     } catch (err) {
       console.error("Form processing error:", err);
-      console.error("Error message:", err.message);
+      const message = err?.message || "Something went wrong. Please try again.";
+      setFormFeedback({ type: "error", message });
       setIsSubmitting(false);
-      alert("Oops! Something went wrong. Please try again.");
     }
   };
 
@@ -618,11 +779,72 @@ export default function Cart({ darkMode }) {
                   <label className="text-[10px] font-black uppercase text-pink-500 ml-2">Notes</label>
                   <textarea
                     name="message"
-                    placeholder="Allergies, color preferences..."
+                    placeholder="Allergies, color theme, event details, other requests or details..."
                     className={`w-full border-2 p-3 rounded-xl h-24 text-sm outline-none focus:border-pink-500 transition-colors ${darkMode ? "bg-gray-900 border-gray-700 text-white" : "bg-gray-50 border-gray-100"
                       }`}
                   />
                 </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase text-pink-500 ml-2">Design Reference Photos</label>
+                  <div className="flex items-center">
+                    <input
+                      id="design-upload-input"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageSelection}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="design-upload-input"
+                      className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-2 border-pink-500 bg-pink-500 px-4 py-2.5 text-[11px] font-black uppercase tracking-[0.12em] text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:bg-pink-600 hover:shadow-lg active:translate-y-0 active:scale-95 ${darkMode ? "shadow-pink-900/20" : "shadow-pink-200"}`}
+                    >
+                      <span className="text-base leading-none">＋</span>
+                      <span>Image upload</span>
+                    </label>
+                  </div>
+                  <p className="text-[11px] text-gray-500">
+                    Max {MAX_IMAGE_COUNT} images, each up to 20MP. Common image formats are supported.
+                  </p>
+                  {uploadError && (
+                    <p className="text-[11px] text-red-500 font-semibold">
+                      {uploadError}
+                    </p>
+                  )}
+                  {uploadedFiles.length > 0 && (
+                    <div className="mt-3 grid grid-cols-3 gap-2">
+                      {uploadedFiles.map((file, index) => (
+                        <div key={`${file.name}-${index}`} className="relative">
+                          <img
+                            src={previewUrls[index]}
+                            alt={`Selected preview ${index + 1}`}
+                            className="h-20 w-full rounded-xl border border-pink-200 object-cover shadow-sm"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeSelectedImage(index)}
+                            className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow"
+                            aria-label={`Remove ${file.name}`}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {uploadedFiles.length > 0 && (
+                    <p className="mt-2 text-[11px] text-pink-500 font-semibold">
+                      {uploadedFiles.length} image(s) selected
+                    </p>
+                  )}
+                </div>
+
+                {formFeedback.message && (
+                  <div className={`rounded-xl border px-3 py-2 text-sm ${formFeedback.type === "error" ? "border-red-200 bg-red-50 text-red-700" : "border-green-200 bg-green-50 text-green-700"}`}>
+                    {formFeedback.message}
+                  </div>
+                )}
 
                 <button
                   type="submit"

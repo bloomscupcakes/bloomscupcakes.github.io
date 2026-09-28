@@ -94,9 +94,9 @@ export default function Home({ darkMode }) {
             Welcome to Blooms Cupcakes
           </h1>
 
-          <p className={`max-w-xl mx-auto mb-6 text-lg ${darkMode ? "text-gray-300" : "text-gray-700"
+          <p className={`max-w-xl mx-auto font-bold mb-6 text-lg ${darkMode ? "text-gray-300" : "text-gray-700"
             }`}>
-            Freshly baked buttercream cakes and cupcakes made with love, creativity, and happiness.
+            Custom freshly baked buttercream cakes and cupcakes.
           </p>
 
         </div>
